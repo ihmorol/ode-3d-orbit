@@ -1,5 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#060a14"/>
-  <ellipse cx="16" cy="16" rx="10" ry="6.5" fill="none" stroke="#ff4f00" stroke-width="2" transform="rotate(-24 16 16)"/>
-  <circle cx="23" cy="11" r="3" fill="#edf2fb"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#101c36"/>
+      <stop offset="1" stop-color="#05080f"/>
+    </linearGradient>
+    <linearGradient id="trail" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f7bff"/>
+      <stop offset="1" stop-color="#4cc3ff"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#4cc3ff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#4cc3ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- navy tile -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#1d2a4a" stroke-width="1"/>
+
+  <!-- faint full orbit behind -->
+  <ellipse cx="32" cy="34" rx="21" ry="12" fill="none" stroke="#4cc3ff" stroke-opacity="0.25" stroke-width="2" transform="rotate(-22 32 34)"/>
+
+  <!-- bright trail arc: the orbit being drawn -->
+  <path d="M 14 40 A 21 12 -22 0 1 47 25" fill="none" stroke="url(#trail)" stroke-width="3.4" stroke-linecap="round"/>
+
+  <!-- the orbiting body, with glow -->
+  <circle cx="49" cy="23.5" r="9" fill="url(#glow)"/>
+  <circle cx="49" cy="23.5" r="4" fill="#e8eefc"/>
+
+  <!-- a second, smaller body trailing behind -->
+  <circle cx="24" cy="40.5" r="2" fill="#4cc3ff"/>
 </svg>
