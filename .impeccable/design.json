@@ -5,10 +5,10 @@
   "extensions": {
     "colorMeta": {
       "signal": { "role": "primary", "displayName": "Signal Orange", "canonical": "#ff4f00", "tonalRamp": ["#2b1500", "#552a00", "#804000", "#aa5500", "#d44a00", "#ff4f00", "#ff8a4d", "#ffc499"] },
-      "carbon-950": { "role": "neutral", "displayName": "Carbon 950", "canonical": "#080807", "tonalRamp": ["#080807", "#0d0d0c", "#121211", "#171716", "#1c1c1a", "#212120", "#2a2a28", "#33332f"] },
+      "carbon-950": { "role": "neutral", "displayName": "Carbon 950", "canonical": "#060a14", "tonalRamp": ["#060a14", "#0d0d0c", "#121211", "#171716", "#1c1c1a", "#212120", "#2a2a28", "#33332f"] },
       "amber": { "role": "tertiary", "displayName": "Phosphor Amber", "canonical": "#eab308", "tonalRamp": ["#3a2f00", "#755e00", "#b08c00", "#eab308", "#f4c93e", "#f8d96b", "#fbe697", "#fdf2c4"] },
-      "emerald": { "role": "tertiary", "displayName": "Channel Green", "canonical": "#10b981", "tonalRamp": ["#04251a", "#084a34", "#0c704f", "#10b981", "#3ec99a", "#6bd9b3", "#98e8cd", "#c5f4e6"] },
-      "crimson": { "role": "tertiary", "displayName": "Channel Red", "canonical": "#ef4444", "tonalRamp": ["#381111", "#702222", "#a83333", "#ef4444", "#f36c6c", "#f79393", "#fbb9b9", "#ffe0e0"] }
+      "emerald": { "role": "tertiary", "displayName": "Channel Green", "canonical": "#3fd68f", "tonalRamp": ["#04251a", "#084a34", "#0c704f", "#3fd68f", "#3fd68f", "#6bd9b3", "#98e8cd", "#c5f4e6"] },
+      "crimson": { "role": "tertiary", "displayName": "Channel Red", "canonical": "#ff6b6b", "tonalRamp": ["#381111", "#702222", "#a83333", "#ff6b6b", "#f36c6c", "#f79393", "#fbb9b9", "#ffe0e0"] }
     },
     "typographyMeta": {
       "brand": { "displayName": "Brand", "purpose": "The wordmark only — one element per screen." },
@@ -33,7 +33,7 @@
       "refersTo": "button",
       "description": "Square instrument key; orange when the state it toggles is active.",
       "html": "<button class=\"ds-btn\">Step</button> <button class=\"ds-btn ds-btn-active\">Run</button>",
-      "css": ".ds-btn { appearance: none; background: #131311; border: 1px solid #222220; color: #ededec; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 10px; cursor: pointer; border-radius: 0; transition: background-color 80ms linear, border-color 80ms linear, color 80ms linear; } .ds-btn:hover { background: #1a1a17; border-color: #82827b; } .ds-btn:focus-visible { outline: 2px solid #ff4f00; outline-offset: 1px; } .ds-btn-active, .ds-btn-active:hover { background: #ff4f00; border-color: #ff4f00; color: #080807; font-weight: 600; }"
+      "css": ".ds-btn { appearance: none; background: #111a30; border: 1px solid #223054; color: #edf2fb; font-family: 'Fira Code', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 11px; cursor: pointer; border-radius: 0; transition: background-color 80ms linear, border-color 80ms linear, color 80ms linear; } .ds-btn:hover { background: #182342; border-color: #8091b4; } .ds-btn:focus-visible { outline: 2px solid #ff4f00; outline-offset: 1px; } .ds-btn-active, .ds-btn-active:hover { background: #ff4f00; border-color: #ff4f00; color: #060a14; font-weight: 600; }"
     },
     {
       "name": "Field input",
@@ -41,7 +41,7 @@
       "refersTo": "input",
       "description": "Carbon well for equations, names, and numeric values.",
       "html": "<input class=\"ds-input\" value=\"sigma * (y - x)\" spellcheck=\"false\">",
-      "css": ".ds-input { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #ededec; background: #080807; border: 1px solid #222220; padding: 4px 8px; border-radius: 0; width: 220px; } .ds-input:focus { border-color: #ff4f00; outline: none; }"
+      "css": ".ds-input { font-family: 'Fira Code', ui-monospace, monospace; font-size: 12px; color: #edf2fb; background: #060a14; border: 1px solid #223054; padding: 4px 8px; border-radius: 0; width: 220px; } .ds-input:focus { border-color: #ff4f00; outline: none; }"
     },
     {
       "name": "Panel",
@@ -49,7 +49,7 @@
       "refersTo": "panel",
       "description": "Flat carbon workbench panel with an engraved mono label.",
       "html": "<div class=\"ds-panel\"><div class=\"ds-panel-label\">State dimension (N)</div><div class=\"ds-panel-body\">First-order system dS/dt = f(S, P)</div></div>",
-      "css": ".ds-panel { background: #0c0c0b; border: 1px solid #222220; padding: 12px; border-radius: 0; max-width: 300px; } .ds-panel-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #ededec; margin-bottom: 4px; } .ds-panel-body { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: #96968f; }"
+      "css": ".ds-panel { background: #0b1120; border: 1px solid #223054; padding: 12px; border-radius: 0; max-width: 300px; } .ds-panel-label { font-family: 'Fira Code', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #edf2fb; margin-bottom: 4px; } .ds-panel-body { font-family: 'Fira Code', ui-monospace, monospace; font-size: 11px; color: #9fb0cf; }"
     },
     {
       "name": "Tab",
@@ -57,7 +57,7 @@
       "refersTo": "button",
       "description": "Workbench section tab with a keyboard hint.",
       "html": "<div class=\"ds-tabs\"><button class=\"ds-tab ds-tab-active\"><span>Equations</span><kbd>1</kbd></button><button class=\"ds-tab\"><span>Constants</span><kbd>3</kbd></button></div>",
-      "css": ".ds-tabs { display: flex; background: #080807; } .ds-tab { appearance: none; background: transparent; border: none; border-right: 1px solid #222220; padding: 10px 14px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: #96968f; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; } .ds-tab kbd { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; color: #82827b; border: 1px solid #222220; padding: 0 3px; } .ds-tab-active { background: #131311; color: #ff4f00; font-weight: 600; }"
+      "css": ".ds-tabs { display: flex; background: #060a14; } .ds-tab { appearance: none; background: transparent; border: none; border-right: 1px solid #223054; padding: 10px 14px; font-family: 'Fira Code', ui-monospace, monospace; font-size: 11px; color: #9fb0cf; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; } .ds-tab kbd { font-family: 'Fira Code', ui-monospace, monospace; font-size: 10px; color: #8091b4; border: 1px solid #223054; padding: 0 3px; } .ds-tab-active { background: #111a30; color: #ff4f00; font-weight: 600; }"
     },
     {
       "name": "Error banner",
@@ -65,7 +65,7 @@
       "refersTo": "panel",
       "description": "Inline expression-error report that names the problem.",
       "html": "<div class=\"ds-error\"><span class=\"ds-error-title\">Expression error</span><span>\"1k\" is not a valid constant name — use letters, digits and underscores.</span></div>",
-      "css": ".ds-error { background: rgba(239, 68, 68, 0.15); border-bottom: 1px solid #ef4444; padding: 8px 12px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; color: #ef4444; display: flex; align-items: baseline; gap: 8px; } .ds-error-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }"
+      "css": ".ds-error { background: rgba(239, 68, 68, 0.15); border-bottom: 1px solid #ff6b6b; padding: 8px 12px; font-family: 'Fira Code', ui-monospace, monospace; font-size: 11px; color: #ff6b6b; display: flex; align-items: baseline; gap: 8px; } .ds-error-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }"
     }
   ],
   "narrative": {
@@ -74,7 +74,7 @@
     "keyCharacteristics": [
       "Flat carbon panel ladder (4 near-black steps) with 1px seams; zero shadows, zero radius",
       "Signal orange (#ff4f00) as the single accent: active states, live values, focus rings, run state",
-      "JetBrains Mono for every number, equation, and label; Inter only for descriptive prose",
+      "Fira Code for every number, equation, and label; Inter only for descriptive prose",
       "Full-viewport app frame: bar / workbench / viewport / telemetry strip — never a scrolling page",
       "The WebGL scene is the interface; chrome recedes to hairlines"
     ],
@@ -84,7 +84,7 @@
       { "name": "The Data-in-Mono Rule", "body": "Any number a visitor can read or edit is monospaced with tabular figures so it never shifts width while scrubbing.", "section": "typography" }
     ],
     "dos": [
-      "Do set every editable or displayed number in JetBrains Mono with tabular-nums.",
+      "Do set every editable or displayed number in Fira Code with tabular-nums.",
       "Do reserve Signal orange for active/live/selected states and focus rings.",
       "Do separate panels with 1px Carbon 700 seams and keep corners at 0 radius.",
       "Do keep the frame at exactly 100vh — the page scrolls inside panels, never as a document."

@@ -3,7 +3,7 @@
  * and run the frame loop (integrate → HUD → 2D panels → render).
  */
 import { appState } from './state.js';
-import { initScene, stepSimulation, renderScene, updateControls, resizeViewport } from './scene.js';
+import { initScene, stepSimulation, renderScene, updateControls } from './scene.js';
 import { initWorkbench, loadPreset, updateHUD } from './workbench.js';
 import { renderOrientationGizmo, renderNStateOscilloscope } from './panels.js';
 
@@ -36,5 +36,4 @@ function animate() {
 initScene();
 initWorkbench();
 loadPreset('lorenz1960');
-window.addEventListener('resize', resizeViewport);
 animate();

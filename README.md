@@ -1,9 +1,8 @@
 # Phase Space
 
-An interactive explorer for the phase space of nonlinear dynamical systems.
-Pick a system — or write your own equations — and watch an ensemble of
-trajectories integrate in real time as glowing 3D trails. Scrub a constant
-and the attractor deforms under your cursor.
+Pick a system of equations — or write your own — and watch it move in 3D
+as glowing trails. Scrub a constant and the attractor deforms under your
+cursor. Everything updates while the simulation runs.
 
 Everything runs client-side: plain HTML, CSS, and JavaScript with
 [Three.js](https://threejs.org/) for rendering. No build step, no backend.
@@ -29,9 +28,9 @@ Then open the printed URL. The Lorenz 1960 system starts integrating immediately
   and initial value is a text field. Expressions compile on keystroke and the
   simulation restarts from the new system. A fixed grammar provides `sin`,
   `cos`, `exp`, `log`, `sqrt`, `tanh`, `atan2`, `^`, `pi`, and friends.
-- **Generate N-state rings** — write one indexed rule such as
-  `(x[i+1] - x[i-2]) * x[i-1] - x[i] + F` and expand it across any N from 3
-  to 40 with periodic boundary wrapping (this is the Lorenz-96 construction).
+- **Generate rings** — write one rule for a variable `i`, such as
+  `(x[i+1] - x[i-2]) * x[i-1] - x[i] + F`, and copy it around a ring of any
+  N from 3 to 40, with the ends wrapping around (this is the Lorenz-96 idea).
 - **Scrub constants** — sliders, stepper buttons, and drag-to-scrub name
   chips all change the system while it runs.
 - **Control the view** — perspective/orthographic projection, axis-aligned

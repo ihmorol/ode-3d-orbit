@@ -17,12 +17,12 @@ export function compileSystem() {
     const identifierRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
     for (const name of stateNames) {
         if (!identifierRegex.test(name)) {
-            throw new Error(`"${name}" is not a valid state name — use letters, digits and underscores.`);
+            throw new Error(`"${name}" cannot be a variable name. Use letters, digits and underscores.`);
         }
     }
     for (const name of paramNames) {
         if (!identifierRegex.test(name)) {
-            throw new Error(`"${name}" is not a valid constant name — use letters, digits and underscores.`);
+            throw new Error(`"${name}" cannot be a constant name. Use letters, digits and underscores.`);
         }
     }
 
@@ -39,7 +39,12 @@ export function compileSystem() {
         fnLines.push(`out[${idx}] = ${preprocessMathExpression(st.eq || '0')};`);
     });
 
-    const compiledFn = new Function('S', 'P', 'math', 'out', fnLines.join('\n'));
+    let compiledFn;
+    try {
+        compiledFn = new Function('S', 'P', 'math', 'out', fnLines.join('\n'));
+    } catch (err) {
+        throw new Error(`Couldn't read the equations — check for missing brackets, operators, or stray characters. (${err.message})`);
+    }
 
     // Smoke-test at a benign point so a bad expression surfaces now,
     // not as NaN coordinates several seconds into the run.
@@ -47,11 +52,15 @@ export function compileSystem() {
     const testOut = new Float64Array(appState.states.length);
     const testP = {};
     appState.params.forEach((p) => { testP[p.name] = p.val; });
-    compiledFn(testS, testP, MATH_ENV, testOut);
+    try {
+        compiledFn(testS, testP, MATH_ENV, testOut);
+    } catch (err) {
+        throw new Error(`The equations crashed at the test point — check every function name and constant. (${err.message})`);
+    }
 
     for (let i = 0; i < testOut.length; i++) {
         if (Number.isNaN(testOut[i])) {
-            throw new Error(`d${appState.states[i].name}/dt evaluated to NaN at the test point.`);
+            throw new Error(`d${appState.states[i].name}/dt gives no number at the test point — check for division by zero or log of a negative value.`);
         }
     }
 

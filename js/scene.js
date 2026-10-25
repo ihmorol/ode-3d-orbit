@@ -26,7 +26,7 @@ export function initScene() {
     const aspect = w / h;
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x080807);
+    scene.background = new THREE.Color(0x060a14);
 
     perspCamera = new THREE.PerspectiveCamera(50, aspect, 0.05, 3000);
     perspCamera.position.set(40, 30, 45);
@@ -85,13 +85,13 @@ export function buildReferenceCage(halfExtent = 10) {
 
     const ext = Math.max(1.5, halfExtent);
     const divisions = 16;
-    const gridHelper = new THREE.GridHelper(ext * 2, divisions, 0x2a2a26, 0x161614);
+    const gridHelper = new THREE.GridHelper(ext * 2, divisions, 0x273052, 0x141b30);
     gridHelper.position.y = -ext;
     axesGroup.add(gridHelper);
 
     const boxGeo = new THREE.BoxGeometry(ext * 2, ext * 2, ext * 2);
     const edgesGeo = new THREE.EdgesGeometry(boxGeo);
-    const edgesMat = new THREE.LineBasicMaterial({ color: 0x222220 });
+    const edgesMat = new THREE.LineBasicMaterial({ color: 0x223054 });
     axesGroup.add(new THREE.LineSegments(edgesGeo, edgesMat));
     boxGeo.dispose();
 
@@ -100,9 +100,9 @@ export function buildReferenceCage(halfExtent = 10) {
         const m = new THREE.LineBasicMaterial({ color: hex, transparent: true, opacity: 0.65 });
         return new THREE.Line(g, m);
     };
-    axesGroup.add(makeAxis(new THREE.Vector3(-ext, 0, 0), new THREE.Vector3(ext, 0, 0), 0xef4444));
-    axesGroup.add(makeAxis(new THREE.Vector3(0, 0, -ext), new THREE.Vector3(0, 0, ext), 0x10b981));
-    axesGroup.add(makeAxis(new THREE.Vector3(0, -ext, 0), new THREE.Vector3(0, ext, 0), 0xeab308));
+    axesGroup.add(makeAxis(new THREE.Vector3(-ext, 0, 0), new THREE.Vector3(ext, 0, 0), 0xff6b6b));
+    axesGroup.add(makeAxis(new THREE.Vector3(0, 0, -ext), new THREE.Vector3(0, 0, ext), 0x3fd68f));
+    axesGroup.add(makeAxis(new THREE.Vector3(0, -ext, 0), new THREE.Vector3(0, ext, 0), 0xf5c542));
 }
 
 /**
@@ -166,7 +166,7 @@ export function rebuildTrajectories() {
     const footerModeEl = document.getElementById('footer-ensemble-label');
     if (footerModeEl) {
         const label = appState.seedStrategy === 'single' ? 'Single'
-            : appState.seedStrategy === 'levelsets' ? 'Level-sets' : 'Cloud';
+            : appState.seedStrategy === 'levelsets' ? 'Ring' : 'Cloud';
         footerModeEl.textContent = `${label} (${count})`;
     }
 

@@ -18,7 +18,7 @@ export function renderOrientationGizmo() {
 
     ctx.clearRect(0, 0, w, h);
 
-    ctx.font = '600 10px "JetBrains Mono", monospace';
+    ctx.font = '600 10px "Fira Code", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -37,7 +37,7 @@ export function renderOrientationGizmo() {
         ctx.fillText(ax.label, cx + ax.vec.x * (len + 8), cy - ax.vec.y * (len + 8));
     });
 
-    ctx.fillStyle = '#ededec';
+    ctx.fillStyle = '#edf2fb';
     ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
 }
 
@@ -60,7 +60,7 @@ export function renderNStateOscilloscope() {
     const midY = Math.floor(h * 0.5) + 0.5;
 
     // Graticule
-    ctx.strokeStyle = '#1a1a17';
+    ctx.strokeStyle = '#182242';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(0, Math.floor(h * 0.25) + 0.5);
@@ -69,7 +69,7 @@ export function renderNStateOscilloscope() {
     ctx.lineTo(w, Math.floor(h * 0.75) + 0.5);
     ctx.stroke();
 
-    ctx.strokeStyle = '#32322e';
+    ctx.strokeStyle = '#31406e';
     ctx.beginPath();
     ctx.moveTo(0, midY);
     ctx.lineTo(w, midY);
@@ -88,7 +88,7 @@ export function renderNStateOscilloscope() {
     const slotW = (w - padX * 2) / N;
     const barW = Math.max(4, Math.min(36, slotW * 0.62));
 
-    ctx.font = '500 10px "JetBrains Mono", monospace';
+    ctx.font = '500 10px "Fira Code", monospace';
     ctx.textAlign = 'center';
 
     for (let i = 0; i < N; i++) {
@@ -98,15 +98,15 @@ export function renderNStateOscilloscope() {
         const x = padX + i * slotW + (slotW - barW) * 0.5;
         const y = norm >= 0 ? midY - barH : midY;
 
-        if (i === appState.stateIndices.x) ctx.fillStyle = '#ef4444';
-        else if (i === appState.stateIndices.y) ctx.fillStyle = '#10b981';
-        else if (i === appState.stateIndices.z) ctx.fillStyle = '#eab308';
-        else ctx.fillStyle = '#8a8a85';
+        if (i === appState.stateIndices.x) ctx.fillStyle = '#ff6b6b';
+        else if (i === appState.stateIndices.y) ctx.fillStyle = '#3fd68f';
+        else if (i === appState.stateIndices.z) ctx.fillStyle = '#f5c542';
+        else ctx.fillStyle = '#9fb0cf';
 
         ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(barW), Math.max(2, Math.ceil(barH)));
 
         if (N <= 24) {
-            ctx.fillStyle = '#8a8a85';
+            ctx.fillStyle = '#9fb0cf';
             const name = appState.states[i] ? appState.states[i].name : `x${i + 1}`;
             ctx.fillText(name.slice(0, 4), x + barW * 0.5, h - 3);
         }

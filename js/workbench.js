@@ -46,7 +46,24 @@ function attemptCompile() {
 function updateMappingBadge() {
     const cLabel = appState.mapping.color === '_speed' ? '|v|' : appState.mapping.color;
     el('active-mapping-badge').textContent =
-        `PROJ: (${appState.mapping.x}, ${appState.mapping.y}, ${appState.mapping.z}) C:${cLabel}`;
+        `Axes: ${appState.mapping.x}, ${appState.mapping.y}, ${appState.mapping.z} · Color: ${cLabel}`;
+}
+
+/**
+ * A generated ring system is no longer the selected preset — make the
+ * selector say so instead of silently lying about what's running.
+ */
+function markSelectorCustom() {
+    const select = el('preset-select');
+    let custom = select.querySelector('option[value="custom"]');
+    if (!custom) {
+        custom = document.createElement('option');
+        custom.value = 'custom';
+        custom.hidden = true;
+        custom.textContent = 'Custom system (not a preset)';
+        select.appendChild(custom);
+    }
+    select.value = 'custom';
 }
 
 /* ------------------------------------------------------------------
@@ -127,6 +144,7 @@ function renderEquationsUI() {
 function syncParamValue(i, rawVal) {
     const p = appState.params[i];
     if (!p) return;
+    if (!Number.isFinite(rawVal)) return;
     const val = Number(rawVal.toFixed(4));
     p.val = val;
     appState.paramValues[p.name] = val;
@@ -229,26 +247,30 @@ function renderParametersUI() {
         });
     });
 
-    // Drag-to-scrub on the constant name chips
-    paramList.querySelectorAll('.scrub-label').forEach((lbl) => {
-        lbl.addEventListener('mousedown', (e) => {
-            const i = Number(lbl.dataset.idx);
-            const p = appState.params[i];
-            const startX = e.clientX;
-            const startVal = p.val;
-            const step = p.step || 0.05;
+    // Drag-to-scrub on the constant name chips (cards and quick pills alike)
+    const bindScrubs = (scope) => {
+        scope.querySelectorAll('.scrub-label').forEach((lbl) => {
+            lbl.addEventListener('mousedown', (e) => {
+                const i = Number(lbl.dataset.idx);
+                const p = appState.params[i];
+                const startX = e.clientX;
+                const startVal = p.val;
+                const step = p.step || 0.05;
 
-            const onMove = (moveEvt) => {
-                syncParamValue(i, startVal + (moveEvt.clientX - startX) * step * 0.5);
-            };
-            const onUp = () => {
-                window.removeEventListener('mousemove', onMove);
-                window.removeEventListener('mouseup', onUp);
-            };
-            window.addEventListener('mousemove', onMove);
-            window.addEventListener('mouseup', onUp);
+                const onMove = (moveEvt) => {
+                    syncParamValue(i, startVal + (moveEvt.clientX - startX) * step * 0.5);
+                };
+                const onUp = () => {
+                    window.removeEventListener('mousemove', onMove);
+                    window.removeEventListener('mouseup', onUp);
+                };
+                window.addEventListener('mousemove', onMove);
+                window.addEventListener('mouseup', onUp);
+            });
         });
-    });
+    };
+    bindScrubs(paramList);
+    if (quickBar) bindScrubs(quickBar);
 
     paramList.querySelectorAll('.param-name-input').forEach((inp) => {
         inp.addEventListener('input', (e) => {
@@ -314,7 +336,7 @@ function renderMappingSelectsUI() {
     cSel.innerHTML = '';
     const speedOpt = document.createElement('option');
     speedOpt.value = '_speed';
-    speedOpt.textContent = '|dS/dt| velocity';
+    speedOpt.textContent = 'Speed (|dS/dt|)';
     cSel.appendChild(speedOpt);
 
     stateNames.forEach((name) => {
@@ -532,6 +554,13 @@ export function initWorkbench() {
     el('apply-direct-n-btn').addEventListener('click', () => {
         resizeStatesCount(el('direct-n-input').value);
     });
+    el('direct-n-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            resizeStatesCount(el('direct-n-input').value);
+            e.target.blur();
+        }
+    });
 
     el('add-state-btn').addEventListener('click', () => {
         const candidateNames = ['w', 'u', 'v', 'p', 'q', 'r', 's'];
@@ -600,7 +629,8 @@ export function initWorkbench() {
             z: 'x3',
             color: N >= 4 ? 'x4' : '_speed'
         };
-        el('hud-system-title').textContent = `Coupled ring system (N=${N})`;
+        el('hud-system-title').textContent = `Ring system (N=${N})`;
+        markSelectorCustom();
 
         renderEquationsUI();
         renderMappingSelectsUI();
