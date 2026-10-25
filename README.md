@@ -5,7 +5,7 @@
 <h1 align="center">ODE 3D Orbit</h1>
 
 <p align="center">
-  <a href="https://phase-space-explorer.vercel.app"><img src="https://img.shields.io/badge/live-ode--3d--orbit.vercel.app-ff4f00" alt="Live demo"></a>
+  <a href="https://ode-3d-orbit.vercel.app"><img src="https://img.shields.io/badge/live-ode--3d--orbit.vercel.app-ff4f00" alt="Live demo"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/three.js-0.186-0b1120?logo=three.js" alt="Three.js 0.186">
   <img src="https://img.shields.io/badge/build%20step-none-31406e" alt="No build step">
