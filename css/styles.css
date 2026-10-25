@@ -376,6 +376,9 @@ input[type="range"]:hover::-moz-range-thumb {
     min-height: 0;
     padding-right: 2px;
 }
+/* Leftover column height spreads across the cards */
+.col > .card { flex: 1 0 auto; }
+.col > .card.collapsed { flex: 0 0 auto; }
 
 .center {
     display: flex;

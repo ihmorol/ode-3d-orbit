@@ -679,7 +679,7 @@ export function initWorkbench() {
     });
 
     // Collapsible cards: chevron on each head, choice remembered
-    const savedCards = JSON.parse(localStorage.getItem('ode-cards') || '{}');
+    const savedCards = JSON.parse(localStorage.getItem('ode-cards2') || '{}');
     document.querySelectorAll('.card').forEach((card) => {
         const head = card.querySelector('.card-head');
         const title = card.querySelector('h2');
@@ -694,10 +694,10 @@ export function initWorkbench() {
             toggle.setAttribute('aria-expanded', String(!c));
             toggle.setAttribute('aria-label', (c ? 'Expand ' : 'Collapse ') + key);
             savedCards[key] = c;
-            localStorage.setItem('ode-cards', JSON.stringify(savedCards));
+            localStorage.setItem('ode-cards2', JSON.stringify(savedCards));
         };
         if (savedCards[key] !== undefined) setCollapsed(savedCards[key]);
-        else if (key === 'Generator' || key === 'Colors & axes' || key === 'Solver') setCollapsed(true);
+        else if (key === 'Generator') setCollapsed(true);
         toggle.addEventListener('click', () => setCollapsed(!card.classList.contains('collapsed')));
         title.addEventListener('click', () => setCollapsed(!card.classList.contains('collapsed')));
     });
