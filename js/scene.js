@@ -225,8 +225,23 @@ export function rebuildTrajectories() {
         });
     }
 
-    // Pre-warm so the attractor shape is visible immediately on load.
+    // Pre-warm so the attractor shape is visible immediately on load, then
+    // size the head markers to the attractor — a rebuild without a camera
+    // refit (reset, sliders, seed edits) must never leave them mis-sized.
     stepSimulation(70);
+
+    const box = computeAttractorBoundingBox();
+    const boxCenter = new THREE.Vector3();
+    const boxSize = new THREE.Vector3();
+    if (!box.isEmpty()) {
+        box.getCenter(boxCenter);
+        box.getSize(boxSize);
+    }
+    const span = Math.max(boxSize.x, boxSize.y, boxSize.z, 2.0);
+    appState.lastAttractorSpan = span;
+    const headSize = Math.max(0.025, span * 0.015);
+    headsMesh.geometry.dispose();
+    headsMesh.geometry = new THREE.BoxGeometry(headSize, headSize, headSize);
 }
 
 const dummyMatrix = new THREE.Matrix4();

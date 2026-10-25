@@ -664,7 +664,7 @@ export function initWorkbench() {
 
     // Integrator controls
     const updateDt = (newDt) => {
-        appState.dt = Math.max(0.0001, Math.min(0.05, Number(newDt.toFixed(4))));
+        appState.dt = Math.max(0.0005, Math.min(0.04, Number(newDt.toFixed(4))));
         el('slider-dt').value = appState.dt;
         el('val-dt').textContent = appState.dt.toFixed(4);
     };
