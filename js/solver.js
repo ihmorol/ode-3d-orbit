@@ -43,7 +43,7 @@ export function compileSystem() {
     try {
         compiledFn = new Function('S', 'P', 'math', 'out', fnLines.join('\n'));
     } catch (err) {
-        throw new Error(`Couldn't read the equations — check for missing brackets, operators, or stray characters. (${err.message})`);
+        throw new Error(`Couldn't read the equations. Check for missing brackets, operators, or stray characters. (${err.message})`);
     }
 
     // Smoke-test at a benign point so a bad expression surfaces now,
@@ -60,7 +60,7 @@ export function compileSystem() {
 
     for (let i = 0; i < testOut.length; i++) {
         if (Number.isNaN(testOut[i])) {
-            throw new Error(`d${appState.states[i].name}/dt gives no number at the test point — check for division by zero or log of a negative value.`);
+            throw new Error(`d${appState.states[i].name}/dt gives no number at the test point. Check for division by zero or log of a negative value.`);
         }
     }
 

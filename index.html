@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phase Space — explore chaotic systems in 3D</title>
+    <title>Phase Space - explore chaotic systems in 3D</title>
     <meta name="description" content="Explore the phase space of nonlinear dynamical systems: edit the ODEs, scrub constants, and watch chaotic attractors integrate live in 3D.">
     <meta name="theme-color" content="#060a14">
-    <meta property="og:title" content="Phase Space — explore chaotic systems in 3D">
-    <meta property="og:description" content="Pick a system of equations or write your own, watch it move in 3D, and scrub the constants to see chaos respond.">
+    <meta property="og:title" content="Phase Space - explore chaotic systems in 3D">
+    <meta property="og:description" content="Pick a system of equations or write your own, watch it move in 3D, and drag the constants while it runs.">
     <meta property="og:type" content="website">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060a14'/%3E%3Cellipse cx='16' cy='16' rx='10' ry='6.5' fill='none' stroke='%23ff4f00' stroke-width='2' transform='rotate(-24 16 16)'/%3E%3Ccircle cx='23' cy='11' r='3' fill='%23ededec'/%3E%3C/svg%3E">
 
@@ -42,8 +42,8 @@
             <label for="preset-select" class="bar-label">System</label>
             <select id="preset-select" class="select-dark">
                 <optgroup label="Classic papers">
-                    <option value="lorenz1960">Lorenz 1960 — Tellus 12, 243–254 (A, F, G)</option>
-                    <option value="lorenz1963">Lorenz 1963 — deterministic nonperiodic flow</option>
+                    <option value="lorenz1960">Lorenz 1960, Tellus 12, 243-254 (A, F, G)</option>
+                    <option value="lorenz1963">Lorenz 1963, deterministic nonperiodic flow</option>
                 </optgroup>
                 <optgroup label="Coupled rings">
                     <option value="lorenz96_8">Lorenz-96 coupled ring (N = 8)</option>
@@ -113,7 +113,7 @@
 
             <div id="error-banner" class="error-banner hidden" role="alert">
                 <span class="error-title">Expression error</span>
-                <span id="error-message">—</span>
+                <span id="error-message"></span>
             </div>
 
             <div class="workbench-body">
@@ -136,14 +136,13 @@
 
                     <div id="lorenz1960-spec-box" class="panel panel-note">
                         <div class="row-between">
-                            <span class="note-accent">Lorenz (1960) — Tellus 12, 243–254</span>
+                            <span class="note-accent">Lorenz (1960), Tellus 12, 243-254</span>
                             <span class="note-dim">2D barotropic vorticity</span>
                         </div>
                         <p class="prose">
-                            Three-mode spectral truncation ∇²ψ = A cos ly + F cos kx + 2G sin ly sin kx.
-                            Conserves kinetic energy E and mean-square vorticity V exactly; the solutions
-                            are Jacobi elliptic functions tracing the intersection curve of the two
-                            invariant ellipsoids.
+                            A 3-wave weather model:
+                            ∇²ψ = A cos ly + F cos kx + 2G sin ly sin kx. Energy E and vorticity V stay
+                            exactly constant, so the orbits are closed curves where the two ellipsoids meet.
                         </p>
                     </div>
 
@@ -183,8 +182,8 @@
                     <div class="panel panel-inset">
                         <div class="panel-label">Generator</div>
                         <p class="prose">
-                            Write one rule for variable i, and the app copies it around a ring
-                            of N variables — the ends wrap around.
+                            Write one rule for variable i. The app copies it around a ring of N
+                            variables, and the ends wrap around.
                         </p>
                     </div>
 
@@ -226,9 +225,9 @@
 
                     <div class="panel panel-note">
                         <div class="panel-label">How the ring works</div>
-                        <div class="note-line"><span class="tok tok-accent">x[i]</span> — variable number i, from 1 to N</div>
-                        <div class="note-line"><span class="tok tok-accent">x[i+1], x[i-1], x[i-2]</span> — neighbors, wrapping around the ring (x<sub>N+1</sub> is x₁, x₀ is x<sub>N</sub>)</div>
-                        <div class="note-line"><span class="tok tok-accent">i, N</span> — the variable's number and the ring size</div>
+                        <div class="note-line"><span class="tok tok-accent">x[i]</span>: variable number i, from 1 to N</div>
+                        <div class="note-line"><span class="tok tok-accent">x[i+1], x[i-1], x[i-2]</span>: the neighbors. They wrap around (x<sub>N+1</sub> is x₁, x₀ is x<sub>N</sub>)</div>
+                        <div class="note-line"><span class="tok tok-accent">i, N</span>: the variable's number and the ring size</div>
                     </div>
                 </section>
 
@@ -237,7 +236,7 @@
                     <div class="panel panel-inset row-between">
                         <div>
                             <div class="panel-label">Constants</div>
-                            <div class="panel-sub">Drag the sliders — the system updates while it runs</div>
+                            <div class="panel-sub">Drag the sliders. The system updates while it runs</div>
                         </div>
                         <button id="add-param-btn" class="btn btn-sm">+ Add constant</button>
                     </div>

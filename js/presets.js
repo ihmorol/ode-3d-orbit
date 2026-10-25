@@ -142,7 +142,7 @@ export const PRESETS = {
     },
 
     hyper_rossler: {
-        name: 'Rössler hyperchaos (4D)',
+        name: 'Rössler hyperchaos (4 variables)',
         states: [
             { name: 'x', eq: '-y - z', init: -10.0 },
             { name: 'y', eq: 'x + a * y + w', init: -6.0 },
@@ -163,7 +163,7 @@ export const PRESETS = {
     },
 
     hyper_lorenz: {
-        name: 'Lorenz–Stenflo hyperchaos (4D)',
+        name: 'Lorenz–Stenflo hyperchaos (4 variables)',
         states: [
             { name: 'x', eq: 'a * (y - x) + s * w', init: 1.0 },
             { name: 'y', eq: 'c * x - x * z - y', init: 0.5 },
@@ -184,7 +184,7 @@ export const PRESETS = {
     },
 
     rossler: {
-        name: 'Rössler attractor (3D)',
+        name: 'Rössler attractor (3 variables)',
         states: [
             { name: 'x', eq: '-y - z', init: 0.1 },
             { name: 'y', eq: 'x + a * y', init: 0.1 },
@@ -203,7 +203,7 @@ export const PRESETS = {
     },
 
     chen: {
-        name: 'Chen attractor (3D)',
+        name: 'Chen attractor (3 variables)',
         states: [
             { name: 'x', eq: 'a * (y - x)', init: -0.1 },
             { name: 'y', eq: '(c - a) * x - x * z + c * y', init: 0.5 },
@@ -222,7 +222,7 @@ export const PRESETS = {
     },
 
     thomas: {
-        name: 'Thomas cyclic attractor (3D)',
+        name: 'Thomas cyclic attractor (3 variables)',
         states: [
             { name: 'x', eq: 'sin(y) - b * x', init: 0.1 },
             { name: 'y', eq: 'sin(z) - b * y', init: 0.0 },
@@ -239,7 +239,7 @@ export const PRESETS = {
     },
 
     halvorsen: {
-        name: 'Halvorsen cyclic symmetry (3D)',
+        name: 'Halvorsen attractor (3 variables)',
         states: [
             { name: 'x', eq: '-a * x - 4 * y - 4 * z - y^2', init: -1.48 },
             { name: 'y', eq: '-a * y - 4 * z - 4 * x - z^2', init: -1.51 },
@@ -256,7 +256,7 @@ export const PRESETS = {
     },
 
     aizawa: {
-        name: 'Aizawa toroidal attractor (3D)',
+        name: 'Aizawa attractor (3 variables)',
         states: [
             { name: 'x', eq: '(z - b) * x - d * y', init: 0.1 },
             { name: 'y', eq: 'd * x + (z - b) * y', init: 0.0 },
@@ -278,7 +278,7 @@ export const PRESETS = {
     },
 
     rabinovich: {
-        name: 'Rabinovich–Fabrikant (3D)',
+        name: 'Rabinovich–Fabrikant (3 variables)',
         states: [
             { name: 'x', eq: 'y * (z - 1 + x^2) + gamma * x', init: -1.0 },
             { name: 'y', eq: 'x * (3 * z + 1 - x^2) + gamma * y', init: 0.0 },
