@@ -29,5 +29,10 @@ export const appState = {
     paramValues: {},
     stateIndices: { x: 0, y: 1, z: 2, color: -1 },
     colorBounds: { min: -10, max: 10 },
-    lastAttractorSpan: 10.0
+    lastAttractorSpan: 10.0,
+
+    // Timeline scrubbing
+    scrubbing: false,
+    scrubIndex: 0,
+    scrubTime: 0.0
 };

@@ -58,7 +58,7 @@ npx serve .
 ```
 
 > [!TIP]
-> Keys: Space runs and pauses. R resets. C fits the view. 1 to 4 switch the panels. Drag a constant's name to scrub it.
+> Keys: Space runs and pauses. R resets. C fits the view. Drag a constant's name to scrub it.
 
 ## Add your own system
 
@@ -90,7 +90,7 @@ Equations can use any variable or constant name, plus the functions listed in th
 ## Project layout
 
 ```
-index.html          markup and import map (pins the Three.js version)
+index.html          markup and import map (Three.js is vendored in js/vendor)
 css/styles.css      the whole look: design tokens and components
 js/main.js          entry point and frame loop
 js/state.js         the app's shared state

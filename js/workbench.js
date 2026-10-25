@@ -8,8 +8,9 @@ import { buildCyclicStates } from './math.js';
 import { PRESETS } from './presets.js';
 import { compileSystem, updateStateIndexMap, isLorenz1960Active, computeLorenz1960Invariants } from './solver.js';
 import {
-    rebuildTrajectories, setCameraView, stepSimulation, resizeViewport,
-    toggleCameraProjection, setAutoRotate, setAxesVisible, getParticles
+    rebuildTrajectories, setCameraView, stepSimulation,
+    toggleCameraProjection, setAutoRotate, setAxesVisible, getParticles,
+    getHistoryLen, scrubTo, truncateHistoryAfterScrub
 } from './scene.js';
 
 const el = (id) => document.getElementById(id);
@@ -165,8 +166,6 @@ function syncParamValue(i, rawVal) {
     const slider = document.querySelector(`.param-slider[data-idx="${i}"]`);
     if (slider && document.activeElement !== slider) slider.value = val;
 
-    const quickInput = document.querySelector(`.quick-param-input[data-idx="${i}"]`);
-    if (quickInput && document.activeElement !== quickInput) quickInput.value = val;
 
     if (appState.clearOnScrub) {
         rebuildTrajectories();
@@ -175,12 +174,10 @@ function syncParamValue(i, rawVal) {
 
 function renderParametersUI() {
     const paramList = el('parameters-list');
-    const quickBar = el('quick-params-bar');
     paramList.innerHTML = '';
 
     if (appState.params.length === 0) {
         paramList.innerHTML = '<div class="params-empty">No constants defined</div>';
-        if (quickBar) quickBar.innerHTML = '<div class="params-empty">None</div>';
         return;
     }
 
@@ -207,16 +204,6 @@ function renderParametersUI() {
             </div>
         `;
         paramList.appendChild(card);
-
-        if (quickBar) {
-            const pill = document.createElement('div');
-            pill.className = 'quick-pill';
-            pill.innerHTML = `
-                <span class="scrub-label" data-idx="${idx}" title="Drag horizontally to scrub">${esc(p.name)}</span>
-                <input type="number" data-idx="${idx}" step="${p.step}" value="${p.val}" class="quick-param-input" aria-label="Value of ${esc(p.name)}">
-            `;
-            quickBar.appendChild(pill);
-        }
     });
 
     paramList.querySelectorAll('.param-slider').forEach((slider) => {
@@ -230,14 +217,6 @@ function renderParametersUI() {
             syncParamValue(Number(e.target.dataset.idx), parseFloat(e.target.value) || 0);
         });
     });
-    if (quickBar) {
-        quickBar.querySelectorAll('.quick-param-input').forEach((inp) => {
-            inp.addEventListener('input', (e) => {
-                syncParamValue(Number(e.target.dataset.idx), parseFloat(e.target.value) || 0);
-            });
-        });
-    }
-
     paramList.querySelectorAll('.param-step-btn').forEach((btn) => {
         btn.addEventListener('click', (e) => {
             const i = Number(e.currentTarget.dataset.idx);
@@ -270,7 +249,6 @@ function renderParametersUI() {
         });
     };
     bindScrubs(paramList);
-    if (quickBar) bindScrubs(quickBar);
 
     paramList.querySelectorAll('.param-name-input').forEach((inp) => {
         inp.addEventListener('input', (e) => {
@@ -429,6 +407,7 @@ function resizeStatesCount(targetN) {
 }
 
 export function toggleRunState() {
+    if (!appState.isRunning && appState.scrubbing) truncateHistoryAfterScrub();
     appState.isRunning = !appState.isRunning;
     const btn = el('play-pause-btn');
     const ind = el('run-indicator');
@@ -446,18 +425,9 @@ export function toggleRunState() {
 
 function resetSimulation() {
     appState.initialInvariants = { E0: null, V0: null };
+    appState.scrubbing = false;
     rebuildTrajectories();
-}
-
-function switchWorkbenchTab(targetId) {
-    document.querySelectorAll('.tab-btn').forEach((b) => {
-        const isMatch = b.dataset.tab === targetId;
-        b.classList.toggle('active', isMatch);
-        b.setAttribute('aria-selected', String(isMatch));
-    });
-    document.querySelectorAll('.tab-content').forEach((tc) => {
-        tc.classList.toggle('hidden', tc.id !== targetId);
-    });
+    syncTimeline();
 }
 
 /* ------------------------------------------------------------------
@@ -473,7 +443,8 @@ export function updateHUD() {
     const iy = appState.stateIndices.y;
     const iz = appState.stateIndices.z;
 
-    el('hud-time').textContent = appState.simTime.toFixed(3);
+    const shownTime = appState.scrubbing ? appState.scrubTime : appState.simTime;
+    el('hud-time').textContent = shownTime.toFixed(3);
     el('hud-coords').textContent =
         `(${(s[ix] || 0).toFixed(3)}, ${(s[iy] || 0).toFixed(3)}, ${(s[iz] || 0).toFixed(3)})`;
     el('hud-speed').textContent = (lead.lastSpeed || 0).toFixed(3);
@@ -501,24 +472,36 @@ export function updateHUD() {
         invRow.classList.add('hidden');
         specBox.classList.add('hidden');
     }
+
+    syncTimeline();
+}
+
+function syncTimeline() {
+    const tl = el('timeline-slider');
+    if (!tl) return;
+    const len = getHistoryLen();
+    tl.max = String(Math.max(0, len - 1));
+    if (!appState.scrubbing) {
+        tl.value = String(Math.max(0, len - 1));
+        el('timeline-readout').textContent = 't = ' + appState.simTime.toFixed(3);
+    }
 }
 
 /* ------------------------------------------------------------------
  * Event wiring
  * ------------------------------------------------------------------ */
 
+
 export function initWorkbench() {
     el('preset-select').addEventListener('change', (e) => loadPreset(e.target.value));
-
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
-        btn.addEventListener('click', () => switchWorkbenchTab(btn.dataset.tab));
-    });
 
     el('play-pause-btn').addEventListener('click', toggleRunState);
 
     el('step-once-btn').addEventListener('click', () => {
         if (appState.isRunning) toggleRunState();
-        stepSimulation(1);
+        if (appState.scrubbing) truncateHistoryAfterScrub();
+        stepSimulation(appState.stepsPerFrame);
+        syncTimeline();
         updateHUD();
     });
 
@@ -540,13 +523,6 @@ export function initWorkbench() {
     el('axes-toggle-btn').addEventListener('click', (e) => {
         setAxesVisible(!appState.showAxes);
         e.currentTarget.classList.toggle('active', appState.showAxes);
-    });
-
-    el('workbench-toggle-btn').addEventListener('click', (e) => {
-        const panel = el('workbench-panel');
-        const isHidden = panel.classList.toggle('hidden');
-        e.currentTarget.classList.toggle('active', !isHidden);
-        resizeViewport();
     });
 
     el('n-dec-btn').addEventListener('click', () => resizeStatesCount(appState.states.length - 1));
@@ -571,8 +547,6 @@ export function initWorkbench() {
         renderMappingSelectsUI();
         if (attemptCompile()) rebuildTrajectories();
     });
-
-    el('quick-add-param-btn').addEventListener('click', () => el('add-param-btn').click());
 
     el('add-param-btn').addEventListener('click', () => {
         const existing = appState.params.map((p) => p.name);
@@ -704,6 +678,45 @@ export function initWorkbench() {
         el('val-spread').textContent = parseFloat(e.target.value).toFixed(2);
     });
 
+    // Collapsible cards: chevron on each head, choice remembered
+    const savedCards = JSON.parse(localStorage.getItem('ode-cards') || '{}');
+    document.querySelectorAll('.card').forEach((card) => {
+        const head = card.querySelector('.card-head');
+        const title = card.querySelector('h2');
+        if (!head || !title) return;
+        const key = title.textContent.trim();
+        const toggle = document.createElement('button');
+        toggle.className = 'card-toggle';
+        toggle.setAttribute('aria-expanded', 'true');
+        head.appendChild(toggle);
+        const setCollapsed = (c) => {
+            card.classList.toggle('collapsed', c);
+            toggle.setAttribute('aria-expanded', String(!c));
+            toggle.setAttribute('aria-label', (c ? 'Expand ' : 'Collapse ') + key);
+            savedCards[key] = c;
+            localStorage.setItem('ode-cards', JSON.stringify(savedCards));
+        };
+        if (savedCards[key] !== undefined) setCollapsed(savedCards[key]);
+        else if (key === 'Generator' || key === 'Colors & axes' || key === 'Solver') setCollapsed(true);
+        toggle.addEventListener('click', () => setCollapsed(!card.classList.contains('collapsed')));
+        title.addEventListener('click', () => setCollapsed(!card.classList.contains('collapsed')));
+    });
+
+    // Timeline scrubber
+    const tl = el('timeline-slider');
+    tl.addEventListener('pointerdown', () => {
+        if (appState.isRunning) toggleRunState();
+        appState.scrubbing = true;
+    });
+    tl.addEventListener('input', (e) => {
+        if (!appState.scrubbing) appState.scrubbing = true;
+        scrubTo(Number(e.target.value));
+        el('timeline-readout').textContent = 't = ' + appState.scrubTime.toFixed(3);
+    });
+    tl.addEventListener('change', () => {
+        el('timeline-readout').textContent = 't = ' + appState.scrubTime.toFixed(3);
+    });
+
     // Keyboard shortcuts — disabled while typing in a field
     window.addEventListener('keydown', (e) => {
         const tag = document.activeElement ? document.activeElement.tagName : '';
@@ -716,14 +729,6 @@ export function initWorkbench() {
             resetSimulation();
         } else if (e.key === 'c' || e.key === 'C') {
             setCameraView('ISO');
-        } else if (e.key === '1') {
-            switchWorkbenchTab('tab-equations');
-        } else if (e.key === '2') {
-            switchWorkbenchTab('tab-rings');
-        } else if (e.key === '3') {
-            switchWorkbenchTab('tab-constants');
-        } else if (e.key === '4') {
-            switchWorkbenchTab('tab-display');
         }
     });
 }

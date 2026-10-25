@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ODE 3D Orbit - type an equation, watch it orbit</title>
-    <meta name="description" content="Explore the phase space of nonlinear dynamical systems: edit the ODEs, scrub constants, and watch chaotic attractors integrate live in 3D.">
-    <meta name="theme-color" content="#060a14">
+    <meta name="description" content="Pick a system of equations or write your own, watch it move in 3D, and drag the constants while it runs.">
+    <meta name="theme-color" content="#05080f">
     <meta property="og:title" content="ODE 3D Orbit - type an equation, watch it orbit">
     <meta property="og:description" content="Pick a system of equations or write your own, watch it move in 3D, and drag the constants while it runs.">
     <meta property="og:type" content="website">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23060a14'/%3E%3Cellipse cx='16' cy='16' rx='10' ry='6.5' fill='none' stroke='%23ff4f00' stroke-width='2' transform='rotate(-24 16 16)'/%3E%3Ccircle cx='23' cy='11' r='3' fill='%23ededec'/%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2305080f'/%3E%3Cellipse cx='16' cy='16' rx='10' ry='6.5' fill='none' stroke='%234cc3ff' stroke-width='2' transform='rotate(-24 16 16)'/%3E%3Ccircle cx='23' cy='11' r='3' fill='%23e8eefc'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,8 +18,8 @@
     <script type="importmap">
     {
         "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+            "three": "./js/vendor/three.module.js",
+            "three/addons/": "./js/vendor/addons/"
         }
     }
     </script>
@@ -28,386 +28,328 @@
 </head>
 <body>
 
-    <!-- ===================== Instrument bar ===================== -->
+    <!-- ===================== Top bar ===================== -->
     <header class="app-bar">
-        <div class="app-bar-group app-bar-brand">
-            <span class="run-dot" id="run-indicator" aria-hidden="true"></span>
+        <div class="bar-side bar-left">
             <div class="brand-lockup">
-                <span class="brand-name">ODE 3D Orbit</span>
-                <span class="brand-sub">Type an equation, watch it orbit</span>
+                <span class="run-dot" id="run-indicator" aria-hidden="true"></span>
+                <div class="brand-text">
+                    <span class="brand-name">ODE 3D Orbit</span>
+                    <span class="brand-sub">Type an equation, watch it orbit</span>
+                </div>
+            </div>
+            <div class="model-field">
+                <label for="preset-select" class="bar-label">System</label>
+                <select id="preset-select" class="select-dark">
+                    <optgroup label="Classic papers">
+                        <option value="lorenz1960">Lorenz 1960, Tellus 12, 243-254 (A, F, G)</option>
+                        <option value="lorenz1963">Lorenz 1963, deterministic nonperiodic flow</option>
+                    </optgroup>
+                    <optgroup label="Coupled rings">
+                        <option value="lorenz96_8">Lorenz-96 coupled ring (N = 8)</option>
+                        <option value="lorenz96_18">Lorenz-96 chaotic ring (N = 18)</option>
+                        <option value="thomas_nd">Thomas cyclic lattice (N = 6)</option>
+                        <option value="lotka_nd">Lotka-Volterra ring (N = 5)</option>
+                        <option value="kuramoto_nd">Kuramoto oscillator ring (N = 10)</option>
+                    </optgroup>
+                    <optgroup label="Famous attractors">
+                        <option value="hyper_rossler">Rössler hyperchaos (4 variables)</option>
+                        <option value="hyper_lorenz">Lorenz-Stenflo hyperchaos (4 variables)</option>
+                        <option value="rossler">Rössler attractor (3 variables)</option>
+                        <option value="chen">Chen attractor (3 variables)</option>
+                        <option value="thomas">Thomas cyclic attractor (3 variables)</option>
+                        <option value="halvorsen">Halvorsen attractor (3 variables)</option>
+                        <option value="aizawa">Aizawa attractor (3 variables)</option>
+                        <option value="rabinovich">Rabinovich-Fabrikant (3 variables)</option>
+                    </optgroup>
+                </select>
             </div>
         </div>
 
-        <div class="app-bar-group app-bar-model">
-            <label for="preset-select" class="bar-label">System</label>
-            <select id="preset-select" class="select-dark">
-                <optgroup label="Classic papers">
-                    <option value="lorenz1960">Lorenz 1960, Tellus 12, 243-254 (A, F, G)</option>
-                    <option value="lorenz1963">Lorenz 1963, deterministic nonperiodic flow</option>
-                </optgroup>
-                <optgroup label="Coupled rings">
-                    <option value="lorenz96_8">Lorenz-96 coupled ring (N = 8)</option>
-                    <option value="lorenz96_18">Lorenz-96 chaotic ring (N = 18)</option>
-                    <option value="thomas_nd">Thomas cyclic lattice (N = 6)</option>
-                    <option value="lotka_nd">Lotka–Volterra ring (N = 5)</option>
-                    <option value="kuramoto_nd">Kuramoto oscillator ring (N = 10)</option>
-                </optgroup>
-                <optgroup label="Famous attractors">
-                    <option value="hyper_rossler">Rössler hyperchaos (4 variables)</option>
-                    <option value="hyper_lorenz">Lorenz–Stenflo hyperchaos (4 variables)</option>
-                    <option value="rossler">Rössler attractor (3 variables)</option>
-                    <option value="chen">Chen attractor (3 variables)</option>
-                    <option value="thomas">Thomas cyclic attractor (3 variables)</option>
-                    <option value="halvorsen">Halvorsen attractor (3 variables)</option>
-                    <option value="aizawa">Aizawa attractor (3 variables)</option>
-                    <option value="rabinovich">Rabinovich–Fabrikant (3 variables)</option>
-                </optgroup>
-            </select>
+        <div class="bar-transport" role="group" aria-label="Run controls">
+            <button id="play-pause-btn" class="btn btn-accent active" title="Space - run or pause">Run</button>
+            <button id="step-once-btn" class="btn" title="Advance one step">Step</button>
+            <button id="reset-sim-btn" class="btn" title="R - reset the starting values">Reset</button>
         </div>
 
-        <div class="app-bar-group app-bar-transport" role="group" aria-label="Simulation transport">
-            <button id="play-pause-btn" class="btn btn-accent active" title="Space: run or pause integration">Run</button>
-            <button id="step-once-btn" class="btn" title="Advance one RK4 step">Step</button>
-            <button id="reset-sim-btn" class="btn" title="R: reset initial conditions">Reset</button>
-        </div>
-
-        <div class="app-bar-spacer"></div>
-
-        <div class="app-bar-group app-bar-views" role="group" aria-label="Camera views">
-            <span class="bar-label view-label">View</span>
-            <button data-cam="ISO" class="btn btn-sm cam-preset-btn" title="Isometric 3D view">ISO</button>
-            <button data-cam="XY" class="btn btn-sm cam-preset-btn" title="X₁–X₂ plane">XY</button>
-            <button data-cam="XZ" class="btn btn-sm cam-preset-btn" title="X₁–X₃ plane">XZ</button>
-            <button data-cam="YZ" class="btn btn-sm cam-preset-btn" title="X₂–X₃ plane">YZ</button>
-            <button id="fit-cam-btn" class="btn btn-sm" title="C: fit view to attractor">Fit</button>
-        </div>
-
-        <div class="app-bar-group app-bar-display" role="group" aria-label="Display options">
-            <button id="proj-toggle-btn" class="btn btn-sm" title="Toggle perspective / orthographic projection">Persp</button>
-            <button id="autorotate-btn" class="btn btn-sm" title="Toggle turntable orbit">Orbit</button>
-            <button id="axes-toggle-btn" class="btn btn-sm active" title="Toggle reference cage and grid">Grid</button>
-            <button id="workbench-toggle-btn" class="btn btn-sm active" title="Show or hide the workbench panel">Panel</button>
+        <div class="bar-side bar-right">
+            <span class="bar-hint">Space run · R reset · C fit</span>
         </div>
     </header>
 
-    <!-- ===================== Workspace ===================== -->
-    <div class="workspace">
-
-        <!-- Left workbench -->
-        <aside id="workbench-panel" class="workbench" aria-label="Simulation workbench">
-
-            <div class="tab-strip" role="tablist" aria-label="Workbench sections">
-                <button data-tab="tab-equations" class="tab-btn active" role="tab" aria-selected="true">
-                    <span>Equations</span><kbd>1</kbd>
-                </button>
-                <button data-tab="tab-rings" class="tab-btn" role="tab" aria-selected="false">
-                    <span>Generator</span><kbd>2</kbd>
-                </button>
-                <button data-tab="tab-constants" class="tab-btn" role="tab" aria-selected="false">
-                    <span>Constants</span><kbd>3</kbd>
-                </button>
-                <button data-tab="tab-display" class="tab-btn" role="tab" aria-selected="false">
-                    <span>Display</span><kbd>4</kbd>
-                </button>
-            </div>
-
-            <div id="error-banner" class="error-banner hidden" role="alert">
-                <span class="error-title">Expression error</span>
-                <span id="error-message"></span>
-            </div>
-
-            <div class="workbench-body">
-
-                <!-- Tab 1: equations & initial state -->
-                <section id="tab-equations" class="tab-content" role="tabpanel">
-
-                    <div class="panel panel-inset row-between">
-                        <div>
-                            <div class="panel-label">Number of variables (N)</div>
-                            <div class="panel-sub">Each variable changes by its own equation</div>
-                        </div>
-                        <div class="n-stepper">
-                            <button id="n-dec-btn" class="btn btn-sm" title="Fewer variables" aria-label="Fewer variables">−</button>
-                            <input type="number" id="direct-n-input" min="3" max="40" value="3" aria-label="State count">
-                            <button id="n-inc-btn" class="btn btn-sm" title="More variables" aria-label="More variables">+</button>
-                            <button id="apply-direct-n-btn" class="btn btn-sm" title="Apply state count">Set</button>
-                        </div>
-                    </div>
-
-                    <div id="lorenz1960-spec-box" class="panel panel-note">
-                        <div class="row-between">
-                            <span class="note-accent">Lorenz (1960), Tellus 12, 243-254</span>
-                            <span class="note-dim">2D barotropic vorticity</span>
-                        </div>
-                        <p class="prose">
-                            A 3-wave weather model:
-                            ∇²ψ = A cos ly + F cos kx + 2G sin ly sin kx. Energy E and vorticity V stay
-                            exactly constant, so the orbits are closed curves where the two ellipsoids meet.
-                        </p>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row-between panel-head">
-                            <span class="panel-label">Equations</span>
-                            <button id="add-state-btn" class="btn btn-sm">+ Add state</button>
-                        </div>
-                        <div id="equations-list" class="equations-list"></div>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row-between panel-head">
-                            <span class="panel-label">Starting values</span>
-                            <span class="note-dim">t = 0.000</span>
-                        </div>
-                        <div id="initial-states-grid" class="initial-grid"></div>
-                    </div>
-
-                    <div class="panel">
-                        <div class="row-between panel-head">
-                            <span class="panel-label">Constants</span>
-                            <button id="quick-add-param-btn" class="btn btn-sm">+ Constant</button>
-                        </div>
-                        <div id="quick-params-bar" class="quick-params"></div>
-                    </div>
-
-                    <div class="panel panel-note grammar">
-                        <div class="panel-label">Math you can use</div>
-                        <div class="note-line">Operators: <span class="tok">+ − * / ^</span> &nbsp; Constants: <span class="tok">pi, e</span></div>
-                        <div class="note-line">Functions: <span class="tok">sin, cos, tan, exp, log, sqrt, abs, tanh, atan2, min, max, sign</span></div>
-                    </div>
-                </section>
-
-                <!-- Tab 2: ring generator -->
-                <section id="tab-rings" class="tab-content hidden" role="tabpanel">
-                    <div class="panel panel-inset">
-                        <div class="panel-label">Generator</div>
-                        <p class="prose">
-                            Write one rule for variable i. The app copies it around a ring of N
-                            variables, and the ends wrap around.
-                        </p>
-                    </div>
-
-                    <div class="panel stack">
-                        <div class="grid-2">
-                            <div class="field-box">
-                                <label for="ngen-count" class="field-label">How many variables (N)</label>
-                                <input type="number" id="ngen-count" min="3" max="40" value="8">
-                            </div>
-                            <div class="field-box">
-                                <label for="ngen-template-select" class="field-label">Template</label>
-                                <select id="ngen-template-select" class="select-dark select-full">
-                                    <option value="lorenz96">Lorenz-96 atmospheric ring</option>
-                                    <option value="thomas_ring">Thomas cyclic sine lattice</option>
-                                    <option value="lotka_ring">Cyclic Lotka–Volterra web</option>
-                                    <option value="kuramoto_ring">Coupled oscillator ring</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="stack-xs">
-                            <div class="row-between field-label-row">
-                                <label for="ngen-formula" class="field-label">Rule for every variable: dx[i]/dt =</label>
-                                <span class="note-dim">i runs 1…N and wraps</span>
-                            </div>
-                            <textarea id="ngen-formula" rows="3" spellcheck="false">(x[i+1] - x[i-2]) * x[i-1] - x[i] + F</textarea>
-                        </div>
-
-                        <div class="stack-xs">
-                            <div class="row-between field-label-row">
-                                <label for="ngen-init-formula" class="field-label">Starting value: x[i](0) =</label>
-                                <span class="note-dim">variables: i, N, constants</span>
-                            </div>
-                            <input type="text" id="ngen-init-formula" value="F + (i == 1 ? 0.08 : -0.02 * sin(i))" spellcheck="false">
-                        </div>
-
-                        <button id="ngen-generate-btn" class="btn btn-accent btn-block">Generate system</button>
-                    </div>
-
-                    <div class="panel panel-note">
-                        <div class="panel-label">How the ring works</div>
-                        <div class="note-line"><span class="tok tok-accent">x[i]</span>: variable number i, from 1 to N</div>
-                        <div class="note-line"><span class="tok tok-accent">x[i+1], x[i-1], x[i-2]</span>: the neighbors. They wrap around (x<sub>N+1</sub> is x₁, x₀ is x<sub>N</sub>)</div>
-                        <div class="note-line"><span class="tok tok-accent">i, N</span>: the variable's number and the ring size</div>
-                    </div>
-                </section>
-
-                <!-- Tab 3: constants -->
-                <section id="tab-constants" class="tab-content hidden" role="tabpanel">
-                    <div class="panel panel-inset row-between">
-                        <div>
-                            <div class="panel-label">Constants</div>
-                            <div class="panel-sub">Drag the sliders. The system updates while it runs</div>
-                        </div>
-                        <button id="add-param-btn" class="btn btn-sm">+ Add constant</button>
-                    </div>
-
-                    <div class="panel row-between toggle-row">
-                        <label for="clear-on-scrub-toggle" class="panel-label label-inline">Clear trails while scrubbing</label>
-                        <input type="checkbox" id="clear-on-scrub-toggle">
-                    </div>
-
-                    <div id="parameters-list" class="panel stack"></div>
-                </section>
-
-                <!-- Tab 4: display & integrator -->
-                <section id="tab-display" class="tab-content hidden" role="tabpanel">
-                    <div class="panel stack">
-                        <div class="panel-label">Axis mapping</div>
-                        <div class="grid-2">
-                            <div class="field-box">
-                                <label for="map-x" class="field-label axis-x1">Axis X₁ (red)</label>
-                                <select id="map-x" class="select-dark select-full"></select>
-                            </div>
-                            <div class="field-box">
-                                <label for="map-y" class="field-label axis-x2">Axis X₂ (green)</label>
-                                <select id="map-y" class="select-dark select-full"></select>
-                            </div>
-                            <div class="field-box">
-                                <label for="map-z" class="field-label axis-x3">Axis X₃ (amber)</label>
-                                <select id="map-z" class="select-dark select-full"></select>
-                            </div>
-                            <div class="field-box">
-                                <label for="map-color" class="field-label axis-c">Color channel</label>
-                                <select id="map-color" class="select-dark select-full"></select>
-                            </div>
-                        </div>
-
-                        <div class="grid-2">
-                            <div class="field-box">
-                                <label for="color-palette" class="field-label">Color palette</label>
-                                <select id="color-palette" class="select-dark select-full">
-                                    <option value="thermal">Orange → gold</option>
-                                    <option value="oscilloscope">Green → amber</option>
-                                    <option value="monochrome">Monochrome white</option>
-                                    <option value="bipolar">Blue → red</option>
-                                </select>
-                            </div>
-                            <div class="field-box">
-                                <label for="seed-strategy-select" class="field-label">Starting positions</label>
-                                <select id="seed-strategy-select" class="select-dark select-full">
-                                    <option value="levelsets">Ordered ring</option>
-                                    <option value="cloud">Random cloud</option>
-                                    <option value="single">Single orbit</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="panel stack" aria-label="Integrator settings">
-                        <div class="panel-label">Solver</div>
-
-                        <div class="slider-box">
-                            <div class="row-between slider-head">
-                                <span class="field-label">Time step (Δt)</span>
-                                <div class="dt-controls">
-                                    <button id="dt-half-btn" class="btn btn-sm" title="Halve Δt" aria-label="Halve time step">÷2</button>
-                                    <span id="val-dt" class="value-accent">0.0150</span>
-                                    <button id="dt-double-btn" class="btn btn-sm" title="Double Δt" aria-label="Double time step">×2</button>
-                                </div>
-                            </div>
-                            <input type="range" id="slider-dt" min="0.0005" max="0.04" step="0.0005" value="0.015">
-                        </div>
-
-                        <div class="slider-box">
-                            <div class="row-between slider-head">
-                                <label for="slider-steps" class="field-label">Substeps per frame</label>
-                                <span id="val-steps" class="value">4</span>
-                            </div>
-                            <input type="range" id="slider-steps" min="1" max="20" step="1" value="4">
-                        </div>
-
-                        <div class="slider-box">
-                            <div class="row-between slider-head">
-                                <label for="slider-particles" class="field-label">Orbits (M)</label>
-                                <span id="val-particles" class="value">20</span>
-                            </div>
-                            <input type="range" id="slider-particles" min="1" max="60" step="1" value="20">
-                        </div>
-
-                        <div class="slider-box">
-                            <div class="row-between slider-head">
-                                <label for="slider-trail" class="field-label">Trail length</label>
-                                <span id="val-trail" class="value">900</span>
-                            </div>
-                            <input type="range" id="slider-trail" min="100" max="2500" step="50" value="900">
-                        </div>
-
-                        <div class="slider-box">
-                            <div class="row-between slider-head">
-                                <label for="slider-spread" class="field-label">Start spread (δ)</label>
-                                <span id="val-spread" class="value">1.10</span>
-                            </div>
-                            <input type="range" id="slider-spread" min="0.005" max="5.0" step="0.01" value="1.10">
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-
-            <div class="workbench-foot">
-                <span class="shortcut-legend"><kbd>Space</kbd> run/pause · <kbd>R</kbd> reset · <kbd>C</kbd> fit</span>
-                <span id="active-mapping-badge" class="mapping-badge">PROJ: (A, F, G) C:|v|</span>
-            </div>
-        </aside>
-
-        <!-- Right viewport -->
-        <main class="viewport" id="viewport-wrapper">
-            <div id="canvas-container" class="canvas-container"></div>
-
-            <div class="hud" aria-hidden="true">
-                <div class="hud-row">
-                    <span id="hud-system-title" class="hud-title">Lorenz 1960 (Tellus 12)</span>
-                    <span id="hud-dim-tag" class="hud-dim">N = 3</span>
-                </div>
-                <div class="hud-row hud-stats">
-                    <span>t = <strong id="hud-time">0.000</strong></span>
-                    <span>lead <strong id="hud-coords">(0.000, 0.000, 0.000)</strong></span>
-                    <span>|dS/dt| <strong id="hud-speed" class="stat-amber">0.000</strong></span>
-                </div>
-                <div id="hud-invariants-row" class="hud-row hud-invariants">
-                    <span>E <strong id="hud-energy">0.000000</strong> <span id="hud-drift-e" class="stat-green">(ΔE: 0.0e+0)</span></span>
-                    <span>V <strong id="hud-enstrophy">0.000000</strong> <span id="hud-drift-v" class="stat-green">(ΔV: 0.0e+0)</span></span>
-                </div>
-            </div>
-
-            <div id="probe-readout" class="probe hidden" aria-hidden="true">
-                <div class="probe-title">Orbit #<span id="probe-orbit-id">0</span></div>
-                <div id="probe-coords" class="probe-coords">(0.000, 0.000, 0.000)</div>
-            </div>
-
-            <div class="gizmo-wrap" aria-hidden="true">
-                <canvas id="gizmo-canvas" width="84" height="84"></canvas>
-            </div>
-        </main>
+    <div id="error-banner" class="error-banner hidden" role="alert">
+        <span class="error-title">Expression error</span>
+        <span id="error-message"></span>
     </div>
 
-    <!-- ===================== Telemetry strip ===================== -->
-    <footer class="telemetry">
-        <div class="telemetry-summary">
-            <div class="row-between">
-                <span class="panel-label">Current system</span>
-                <span id="monitor-n-count" class="value-accent">N = 3</span>
-            </div>
-            <div class="telemetry-rows">
-                <div><span>Solver</span><span>RK4</span></div>
-                <div><span>Orbits</span><span id="footer-ensemble-label" class="stat-amber">Ring (20)</span></div>
-                <div><span>Frame rate</span><span><span id="hud-fps">60</span> fps</span></div>
-            </div>
-        </div>
+    <!-- ===================== Dashboard ===================== -->
+    <main class="dash">
 
-        <div class="telemetry-scope">
-            <div class="scope-head">
-                <span>Current value of each variable · first orbit</span>
-                <div class="scope-legend">
-                    <span><i class="swatch swatch-x1"></i>X₁</span>
-                    <span><i class="swatch swatch-x2"></i>X₂</span>
-                    <span><i class="swatch swatch-x3"></i>X₃</span>
-                    <span><i class="swatch swatch-rest"></i>X₄…Xₙ</span>
+        <!-- Left column: the system -->
+        <aside class="col col-left" aria-label="System settings">
+            <section class="card">
+                <div class="card-head">
+                    <h2>System</h2>
+                    <span id="monitor-n-count" class="card-tag">N = 3</span>
+                </div>
+
+                <div class="n-stepper">
+                    <span class="field-label">Variables</span>
+                    <div class="stepper-controls">
+                        <button id="n-dec-btn" class="btn btn-sm" title="Fewer variables" aria-label="Fewer variables">−</button>
+                        <input type="number" id="direct-n-input" min="3" max="40" value="3" aria-label="Number of variables">
+                        <button id="n-inc-btn" class="btn btn-sm" title="More variables" aria-label="More variables">+</button>
+                        <button id="apply-direct-n-btn" class="btn btn-sm" title="Apply">Set</button>
+                    </div>
+                </div>
+
+                <div id="lorenz1960-spec-box" class="note hidden">
+                    <span class="note-accent">Lorenz (1960), Tellus 12, 243-254</span>
+                    <p class="prose">
+                        A 3-wave weather model:
+                        ∇²ψ = A cos ly + F cos kx + 2G sin ly sin kx. Energy E and vorticity V stay
+                        exactly constant, so the orbits are closed curves where the two
+                        ellipsoids meet.
+                    </p>
+                </div>
+
+                <div class="field-head">
+                    <span class="field-label">Equations</span>
+                    <button id="add-state-btn" class="btn btn-sm">+ Add</button>
+                </div>
+                <div id="equations-list" class="equations-list"></div>
+
+                <div class="field-head">
+                    <span class="field-label">Starting values</span>
+                </div>
+                <div id="initial-states-grid" class="initial-grid"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>Constants</h2>
+                    <button id="add-param-btn" class="btn btn-sm">+ Add</button>
+                </div>
+                <div id="parameters-list" class="stack"></div>
+            </section>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>Generator</h2>
+                </div>
+                <p class="prose">
+                    Write one rule for variable i. The app copies it around a ring of N
+                    variables, and the ends wrap around.
+                </p>
+                <div class="grid-2">
+                    <div class="field-box">
+                        <label for="ngen-count" class="field-label">How many variables</label>
+                        <input type="number" id="ngen-count" min="3" max="40" value="8">
+                    </div>
+                    <div class="field-box">
+                        <label for="ngen-template-select" class="field-label">Template</label>
+                        <select id="ngen-template-select" class="select-dark select-full">
+                            <option value="lorenz96">Lorenz-96 atmospheric ring</option>
+                            <option value="thomas_ring">Thomas cyclic sine lattice</option>
+                            <option value="lotka_ring">Lotka-Volterra web</option>
+                            <option value="kuramoto_ring">Coupled oscillators</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-head">
+                    <label for="ngen-formula" class="field-label">Rule for every variable: dx[i]/dt =</label>
+                    <span class="note-dim">i runs 1…N and wraps</span>
+                </div>
+                <textarea id="ngen-formula" rows="3" spellcheck="false">(x[i+1] - x[i-2]) * x[i-1] - x[i] + F</textarea>
+                <div class="field-head">
+                    <label for="ngen-init-formula" class="field-label">Starting value: x[i](0) =</label>
+                </div>
+                <input type="text" id="ngen-init-formula" value="F + (i == 1 ? 0.08 : -0.02 * sin(i))" spellcheck="false">
+                <button id="ngen-generate-btn" class="btn btn-accent btn-block">Generate system</button>
+                <div class="note">
+                    <div class="note-line"><span class="tok tok-accent">x[i]</span>: variable number i, from 1 to N</div>
+                    <div class="note-line"><span class="tok tok-accent">x[i+1], x[i-1], x[i-2]</span>: the neighbors. They wrap around (x<sub>N+1</sub> is x₁, x₀ is x<sub>N</sub>)</div>
+                    <div class="note-line"><span class="tok tok-accent">i, N</span>: the variable's number and the ring size</div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Center: the live view -->
+        <section class="center">
+            <div class="viewport" id="viewport-wrapper">
+                <div id="canvas-container" class="canvas-container"></div>
+
+                <div class="hud" aria-hidden="true">
+                    <div class="hud-row">
+                        <span id="hud-system-title" class="hud-title">Lorenz 1960 (Tellus 12, 243-254)</span>
+                        <span id="hud-dim-tag" class="hud-dim">N = 3</span>
+                    </div>
+                    <div class="hud-row hud-stats">
+                        <span>t = <strong id="hud-time">0.000</strong></span>
+                        <span>lead <strong id="hud-coords">(0.000, 0.000, 0.000)</strong></span>
+                        <span>speed <strong id="hud-speed" class="stat-amber">0.000</strong></span>
+                    </div>
+                    <div id="hud-invariants-row" class="hud-row hud-invariants">
+                        <span>E <strong id="hud-energy">0.000000</strong> <span id="hud-drift-e" class="stat-green">(ΔE: 0.0e+0)</span></span>
+                        <span>V <strong id="hud-enstrophy">0.000000</strong> <span id="hud-drift-v" class="stat-green">(ΔV: 0.0e+0)</span></span>
+                    </div>
+                </div>
+
+                <div id="probe-readout" class="probe hidden" aria-hidden="true">
+                    <div class="probe-title">Orbit #<span id="probe-orbit-id">0</span></div>
+                    <div id="probe-coords" class="probe-coords">(0.000, 0.000, 0.000)</div>
+                </div>
+
+                <div class="gizmo-wrap" aria-hidden="true">
+                    <canvas id="gizmo-canvas" width="84" height="84"></canvas>
                 </div>
             </div>
-            <canvas id="nstate-canvas" class="scope-canvas"></canvas>
-        </div>
-    </footer>
+
+            <div class="card timeline-card">
+                <div class="card-head">
+                    <h2>Timeline</h2>
+                    <span id="timeline-readout" class="card-tag">t = 0.000</span>
+                </div>
+                <input type="range" id="timeline-slider" min="0" max="0" step="1" value="0" aria-label="Scrub through the recorded run">
+                <div class="row-between timeline-labels">
+                    <span class="note-dim">start</span>
+                    <span class="note-dim">drag to review any moment · Run continues from here</span>
+                    <span class="note-dim">now</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right column: view, colors, solver -->
+        <aside class="col col-right" aria-label="View and solver settings">
+            <div class="card scope-card">
+                <div class="card-head">
+                    <h2>Live values</h2>
+                    <div class="scope-meta">
+                        <span id="footer-ensemble-label" class="stat-amber">Ring (20)</span>
+                        <span class="meta-sep">·</span>
+                        <span><span id="hud-fps">60</span> fps</span>
+                    </div>
+                </div>
+                <canvas id="nstate-canvas" class="scope-canvas"></canvas>
+            </div>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>View</h2>
+                    <span id="active-mapping-badge" class="card-tag">Axes: A, F, G</span>
+                </div>
+                <div class="btn-grid" role="group" aria-label="Camera views">
+                    <button data-cam="ISO" class="btn btn-sm cam-preset-btn" title="Isometric 3D view">ISO</button>
+                    <button data-cam="XY" class="btn btn-sm cam-preset-btn" title="X₁-X₂ plane">XY</button>
+                    <button data-cam="XZ" class="btn btn-sm cam-preset-btn" title="X₁-X₃ plane">XZ</button>
+                    <button data-cam="YZ" class="btn btn-sm cam-preset-btn" title="X₂-X₃ plane">YZ</button>
+                    <button id="fit-cam-btn" class="btn btn-sm" title="C - fit the view to the attractor">Fit</button>
+                </div>
+                <div class="btn-grid btn-grid-3" role="group" aria-label="Display options">
+                    <button id="proj-toggle-btn" class="btn btn-sm" title="Switch between perspective and orthographic">Persp</button>
+                    <button id="autorotate-btn" class="btn btn-sm" title="Spin the view slowly">Orbit</button>
+                    <button id="axes-toggle-btn" class="btn btn-sm active" title="Show or hide the box and grid">Grid</button>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>Colors &amp; axes</h2>
+                </div>
+                <div class="grid-2">
+                    <div class="field-box">
+                        <label for="map-x" class="field-label axis-x1">Axis X₁</label>
+                        <select id="map-x" class="select-dark select-full"></select>
+                    </div>
+                    <div class="field-box">
+                        <label for="map-y" class="field-label axis-x2">Axis X₂</label>
+                        <select id="map-y" class="select-dark select-full"></select>
+                    </div>
+                    <div class="field-box">
+                        <label for="map-z" class="field-label axis-x3">Axis X₃</label>
+                        <select id="map-z" class="select-dark select-full"></select>
+                    </div>
+                    <div class="field-box">
+                        <label for="map-color" class="field-label axis-c">Color</label>
+                        <select id="map-color" class="select-dark select-full"></select>
+                    </div>
+                </div>
+                <div class="field-box">
+                    <label for="color-palette" class="field-label">Color palette</label>
+                    <select id="color-palette" class="select-dark select-full">
+                        <option value="thermal">Orange → gold</option>
+                        <option value="oscilloscope">Green → amber</option>
+                        <option value="monochrome">Monochrome white</option>
+                        <option value="bipolar">Blue → red</option>
+                    </select>
+                </div>
+                <div class="field-box">
+                    <label for="seed-strategy-select" class="field-label">Starting positions</label>
+                    <select id="seed-strategy-select" class="select-dark select-full">
+                        <option value="levelsets">Ordered ring</option>
+                        <option value="cloud">Random cloud</option>
+                        <option value="single">Single orbit</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-head">
+                    <h2>Solver</h2>
+                    <span class="card-tag">RK4</span>
+                </div>
+
+                <div class="slider-box">
+                    <div class="row-between slider-head">
+                        <span class="field-label">Time step (Δt)</span>
+                        <div class="dt-controls">
+                            <button id="dt-half-btn" class="btn btn-sm" title="Halve Δt" aria-label="Halve time step">÷2</button>
+                            <span id="val-dt" class="value-accent">0.0150</span>
+                            <button id="dt-double-btn" class="btn btn-sm" title="Double Δt" aria-label="Double time step">×2</button>
+                        </div>
+                    </div>
+                    <input type="range" id="slider-dt" min="0.0005" max="0.04" step="0.0005" value="0.015">
+                </div>
+
+                <div class="slider-box">
+                    <div class="row-between slider-head">
+                        <label for="slider-steps" class="field-label">Steps per frame</label>
+                        <span id="val-steps" class="value">4</span>
+                    </div>
+                    <input type="range" id="slider-steps" min="1" max="20" step="1" value="4">
+                </div>
+
+                <div class="slider-box">
+                    <div class="row-between slider-head">
+                        <label for="slider-particles" class="field-label">Orbits (M)</label>
+                        <span id="val-particles" class="value">20</span>
+                    </div>
+                    <input type="range" id="slider-particles" min="1" max="60" step="1" value="20">
+                </div>
+
+                <div class="slider-box">
+                    <div class="row-between slider-head">
+                        <label for="slider-trail" class="field-label">Trail length</label>
+                        <span id="val-trail" class="value">900</span>
+                    </div>
+                    <input type="range" id="slider-trail" min="100" max="2500" step="50" value="900">
+                </div>
+
+                <div class="slider-box">
+                    <div class="row-between slider-head">
+                        <label for="slider-spread" class="field-label">Start spread (δ)</label>
+                        <span id="val-spread" class="value">1.10</span>
+                    </div>
+                    <input type="range" id="slider-spread" min="0.005" max="5.0" step="0.01" value="1.10">
+                </div>
+
+                <label class="toggle-row" for="clear-on-scrub-toggle">
+                    <span>Clear trails while scrubbing</span>
+                    <input type="checkbox" id="clear-on-scrub-toggle">
+                </label>
+            </section>
+        </aside>
+    </main>
 
     <script type="module" src="js/main.js"></script>
 </body>

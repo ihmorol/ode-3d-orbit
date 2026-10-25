@@ -1,0 +1,11 @@
+<!DOCTYPE html><html><head><title>graph-test: starting</title></head><body><script type="importmap">{"imports":{"three":"./js/vendor/three.module.js","three/addons/":"./js/vendor/addons/"}}</script><script type="module">const t = (s) => { document.title = s; };
+try { await import("./js/state.js"); t("ok: state"); } catch (e) { t("FAIL state: " + e.message); throw e; }
+try { await import("./js/math.js"); t("ok: math"); } catch (e) { t("FAIL math: " + e.message); throw e; }
+try { await import("./js/presets.js"); t("ok: presets"); } catch (e) { t("FAIL presets: " + e.message); throw e; }
+try { await import("./js/solver.js"); t("ok: solver"); } catch (e) { t("FAIL solver: " + e.message); throw e; }
+try { await import("./js/seeding.js"); t("ok: seeding"); } catch (e) { t("FAIL seeding: " + e.message); throw e; }
+try { await import("./js/scene.js"); t("ok: scene"); } catch (e) { t("FAIL scene: " + e.message); throw e; }
+try { await import("./js/panels.js"); t("ok: panels"); } catch (e) { t("FAIL panels: " + e.message); throw e; }
+try { await import("./js/workbench.js"); t("ok: workbench"); } catch (e) { t("FAIL workbench: " + e.message); throw e; }
+t("GRAPH OK");
+</script></body></html>

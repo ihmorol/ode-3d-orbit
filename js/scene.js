@@ -12,6 +12,15 @@ import { seedParticlePosition } from './seeding.js';
 let scene, perspCamera, orthoCamera, activeCamera, renderer, controls;
 let axesGroup, trailsGroup, headsMesh;
 let particles = [];
+
+// Timeline history ring buffer: one full state snapshot per frame.
+let historyStates = null;
+let historySpeeds = null;
+let historyTimes = null;
+let historyCap = 0;
+let historyLen = 0;
+let historyHead = 0;
+
 const raycaster = new THREE.Raycaster();
 const mouseNDC = new THREE.Vector2();
 
@@ -177,7 +186,7 @@ export function rebuildTrajectories() {
     });
 
     const headGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
-    const headMat = new THREE.MeshBasicMaterial({ color: 0xff4f00 });
+    const headMat = new THREE.MeshBasicMaterial({ color: 0x4cc3ff });
     headsMesh = new THREE.InstancedMesh(headGeo, headMat, count);
     trailsGroup.add(headsMesh);
 
@@ -224,6 +233,22 @@ export function rebuildTrajectories() {
             lastSpeed: 0
         });
     }
+
+    // Timeline history: one full state snapshot per frame, ring-buffered.
+    // Budget ~8 MB so big ensembles automatically record fewer frames.
+    historyCap = Math.max(100, Math.min(2400, Math.floor(1e6 / (count * dim))));
+    historyStates = [];
+    historySpeeds = [];
+    for (let i = 0; i < count; i++) {
+        historyStates.push(new Float64Array(historyCap * dim));
+        historySpeeds.push(new Float32Array(historyCap));
+    }
+    historyTimes = new Float64Array(historyCap);
+    historyLen = 0;
+    historyHead = 0;
+    appState.scrubbing = false;
+    appState.scrubIndex = 0;
+    appState.scrubTime = 0;
 
     // Pre-warm so the attractor shape is visible immediately on load, then
     // size the head markers to the attractor — a rebuild without a camera
@@ -338,6 +363,113 @@ export function stepSimulation(overrideSteps = null) {
     }
 
     headsMesh.instanceMatrix.needsUpdate = true;
+
+    // Record one snapshot per frame for the timeline scrubber.
+    if (historyStates && historyStates.length === particles.length) {
+        const dimRec = appState.states.length;
+        for (let p = 0; p < particles.length; p++) {
+            historyStates[p].set(particles[p].stateVec, historyHead * dimRec);
+            historySpeeds[p][historyHead] = particles[p].lastSpeed;
+        }
+        historyTimes[historyHead] = appState.simTime;
+        historyHead = (historyHead + 1) % historyCap;
+        if (historyLen < historyCap) historyLen++;
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Timeline scrubbing
+ * ------------------------------------------------------------------ */
+
+function historyRingIndex(frame) {
+    return ((historyHead - historyLen + frame) % historyCap + historyCap) % historyCap;
+}
+
+export function getHistoryLen() {
+    return historyLen;
+}
+
+/** Drop everything after the scrub point so Run/Step continue from there. */
+export function truncateHistoryAfterScrub() {
+    if (!appState.scrubbing || historyLen === 0) return;
+    const lastKept = historyRingIndex(appState.scrubIndex);
+    historyLen = appState.scrubIndex + 1;
+    historyHead = (lastKept + 1) % historyCap;
+    appState.simTime = historyTimes[lastKept];
+    appState.scrubbing = false;
+    appState.scrubIndex = 0;
+}
+
+/**
+ * Render the ensemble as it was at recorded frame `frame`: restore every
+ * orbit's full state vector (HUD and scope read it), and repaint the trail
+ * buffers from the recorded frames up to that point.
+ */
+export function scrubTo(frame) {
+    if (!particles.length || historyLen === 0 || !historyStates) return;
+    const k = Math.max(0, Math.min(historyLen - 1, frame));
+    appState.scrubbing = true;
+    appState.scrubIndex = k;
+
+    const dim = appState.states.length;
+    const trailLen = appState.trailLength;
+    const ix = appState.stateIndices.x;
+    const iy = appState.stateIndices.y;
+    const iz = appState.stateIndices.z;
+    const ic = appState.stateIndices.color;
+
+    // Color window: scan the scrubbed stretch so the palette matches.
+    let minC = Infinity;
+    let maxC = -Infinity;
+    for (let p = 0; p < particles.length; p++) {
+        const hs = historyStates[p];
+        for (let f = 0; f <= k; f += 2) {
+            const v = ic === -1 ? historySpeeds[p][historyRingIndex(f)] : hs[historyRingIndex(f) * dim + ic];
+            if (v < minC) minC = v;
+            if (v > maxC) maxC = v;
+        }
+    }
+    if (Number.isFinite(minC) && Number.isFinite(maxC)) {
+        appState.colorBounds.min = minC;
+        appState.colorBounds.max = Math.max(maxC, minC + 1e-5);
+    }
+    const cSpan = Math.max(1e-5, appState.colorBounds.max - appState.colorBounds.min);
+    const cMin = appState.colorBounds.min;
+
+    for (let p = 0; p < particles.length; p++) {
+        const hs = historyStates[p];
+        const pState = particles[p].stateVec;
+        const ri = historyRingIndex(k);
+        for (let d = 0; d < dim; d++) pState[d] = hs[ri * dim + d];
+
+        const posArr = particles[p].positions;
+        const colArr = particles[p].colors;
+        const cHist = particles[p].rawHistory;
+
+        for (let j = 0; j < trailLen; j++) {
+            const f = Math.max(0, k - (trailLen - 1 - j));
+            const rj = historyRingIndex(f);
+            posArr[j * 3] = hs[rj * dim + ix];
+            posArr[j * 3 + 1] = hs[rj * dim + iz];
+            posArr[j * 3 + 2] = hs[rj * dim + iy];
+            const cVal = ic === -1 ? historySpeeds[p][rj] : hs[rj * dim + ic];
+            cHist[j] = cVal;
+            const normC = (cVal - cMin) / cSpan;
+            const ageFade = 0.12 + 0.88 * Math.pow(j / (trailLen - 1), 1.35);
+            sampleTechnicalPalette(normC, appState.palette, rgbScratch);
+            colArr[j * 3] = rgbScratch[0] * ageFade;
+            colArr[j * 3 + 1] = rgbScratch[1] * ageFade;
+            colArr[j * 3 + 2] = rgbScratch[2] * ageFade;
+        }
+        particles[p].geometry.attributes.position.needsUpdate = true;
+        particles[p].geometry.attributes.color.needsUpdate = true;
+
+        const lastIdx = (trailLen - 1) * 3;
+        dummyMatrix.makeTranslation(posArr[lastIdx], posArr[lastIdx + 1], posArr[lastIdx + 2]);
+        headsMesh.setMatrixAt(p, dummyMatrix);
+    }
+    headsMesh.instanceMatrix.needsUpdate = true;
+    appState.scrubTime = historyTimes[historyRingIndex(k)];
 }
 
 function computeAttractorBoundingBox() {

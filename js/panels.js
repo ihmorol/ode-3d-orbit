@@ -57,16 +57,16 @@ export function renderNStateOscilloscope() {
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
 
-    const midY = Math.floor(h * 0.5) + 0.5;
+    const midY = Math.floor(h * 0.56) + 0.5;
 
     // Graticule
     ctx.strokeStyle = '#182242';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(0, Math.floor(h * 0.25) + 0.5);
-    ctx.lineTo(w, Math.floor(h * 0.25) + 0.5);
-    ctx.moveTo(0, Math.floor(h * 0.75) + 0.5);
-    ctx.lineTo(w, Math.floor(h * 0.75) + 0.5);
+    ctx.moveTo(0, Math.floor(h * 0.3) + 0.5);
+    ctx.lineTo(w, Math.floor(h * 0.3) + 0.5);
+    ctx.moveTo(0, Math.floor(h * 0.82) + 0.5);
+    ctx.lineTo(w, Math.floor(h * 0.82) + 0.5);
     ctx.stroke();
 
     ctx.strokeStyle = '#31406e';
@@ -84,31 +84,41 @@ export function renderNStateOscilloscope() {
         if (Number.isFinite(a) && a > maxAbs) maxAbs = a;
     }
 
-    const padX = 12;
+    // Bars fill their slot; the roomy case (few variables) also shows the
+    // numeric value above each bar so the strip carries real information.
+    const padX = 14;
     const slotW = (w - padX * 2) / N;
-    const barW = Math.max(4, Math.min(36, slotW * 0.62));
+    const barW = Math.max(6, Math.min(150, slotW * 0.55));
+    const maxBar = midY - 26;
 
-    ctx.font = '500 10px "Fira Code", monospace';
     ctx.textAlign = 'center';
 
     for (let i = 0; i < N; i++) {
         const val = leadState[i] || 0;
         const norm = Math.max(-1, Math.min(1, val / maxAbs));
-        const barH = Math.abs(norm) * (h * 0.40);
+        const barH = Math.abs(norm) * maxBar;
         const x = padX + i * slotW + (slotW - barW) * 0.5;
         const y = norm >= 0 ? midY - barH : midY;
+        const cx = x + barW * 0.5;
 
-        if (i === appState.stateIndices.x) ctx.fillStyle = '#ff6b6b';
-        else if (i === appState.stateIndices.y) ctx.fillStyle = '#3fd68f';
-        else if (i === appState.stateIndices.z) ctx.fillStyle = '#f5c542';
-        else ctx.fillStyle = '#9fb0cf';
+        let color = '#9fb0cf';
+        if (i === appState.stateIndices.x) color = '#ff6b6b';
+        else if (i === appState.stateIndices.y) color = '#3fd68f';
+        else if (i === appState.stateIndices.z) color = '#f5c542';
 
-        ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(barW), Math.max(2, Math.ceil(barH)));
+        ctx.fillStyle = color;
+        ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(barW), Math.max(2, Math.ceil(barH)));
 
+        if (N <= 16) {
+            ctx.font = '700 13px "Fira Code", monospace';
+            ctx.fillStyle = color;
+            ctx.fillText(val.toFixed(2), cx, 17);
+        }
         if (N <= 24) {
-            ctx.fillStyle = '#9fb0cf';
+            ctx.font = '500 10px "Fira Code", monospace';
+            ctx.fillStyle = '#7387b0';
             const name = appState.states[i] ? appState.states[i].name : `x${i + 1}`;
-            ctx.fillText(name.slice(0, 4), x + barW * 0.5, h - 3);
+            ctx.fillText(name.slice(0, 4), cx, h - 4);
         }
     }
 }
