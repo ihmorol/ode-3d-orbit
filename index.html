@@ -182,6 +182,11 @@
             <div class="viewport" id="viewport-wrapper">
                 <div id="canvas-container" class="canvas-container"></div>
 
+                <button id="fullscreen-btn" class="fs-btn" title="Fullscreen view (F) - hide the panels, keep only the graph" aria-label="Fullscreen view" aria-pressed="false">
+                    <svg class="fs-icon fs-expand" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 2H2v4M10 2h4v4M6 14H2v-4M10 14h4v-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <svg class="fs-icon fs-compress" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h4V2M14 6h-4V2M2 10h4v4M14 10h-4v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+
                 <div id="probe-readout" class="probe hidden" aria-hidden="true">
                     <div class="probe-title">Orbit #<span id="probe-orbit-id">0</span></div>
                     <div id="probe-coords" class="probe-coords">(0.000, 0.000, 0.000)</div>

@@ -8,7 +8,7 @@ import { buildCyclicStates } from './math.js';
 import { PRESETS } from './presets.js';
 import { compileSystem, updateStateIndexMap, isLorenz1960Active, computeLorenz1960Invariants } from './solver.js';
 import {
-    rebuildTrajectories, setCameraView, stepSimulation,
+    rebuildTrajectories, setCameraView, stepSimulation, resizeViewport,
     toggleCameraProjection, setAutoRotate, setAxesVisible, getParticles,
     getHistoryLen, scrubTo, truncateHistoryAfterScrub
 } from './scene.js';
@@ -702,6 +702,16 @@ export function initWorkbench() {
         title.addEventListener('click', () => setCollapsed(!card.classList.contains('collapsed')));
     });
 
+    // Fullscreen (zen) mode: only the graph
+    const fsBtn = el('fullscreen-btn');
+    const setZen = (on) => {
+        document.body.classList.toggle('zen', on);
+        fsBtn.setAttribute('aria-pressed', String(on));
+        fsBtn.title = on ? 'Exit fullscreen (F or Esc)' : 'Fullscreen view (F) - hide the panels, keep only the graph';
+        requestAnimationFrame(() => resizeViewport());
+    };
+    fsBtn.addEventListener('click', () => setZen(!document.body.classList.contains('zen')));
+
     // Timeline scrubber
     const tl = el('timeline-slider');
     tl.addEventListener('pointerdown', () => {
@@ -722,7 +732,11 @@ export function initWorkbench() {
         const tag = document.activeElement ? document.activeElement.tagName : '';
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
-        if (e.code === 'Space') {
+        if (e.key === 'f' || e.key === 'F') {
+            setZen(!document.body.classList.contains('zen'));
+        } else if (e.key === 'Escape') {
+            setZen(false);
+        } else if (e.code === 'Space') {
             e.preventDefault();
             toggleRunState();
         } else if (e.key === 'r' || e.key === 'R') {
