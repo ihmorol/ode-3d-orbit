@@ -179,22 +179,6 @@
             <div class="viewport" id="viewport-wrapper">
                 <div id="canvas-container" class="canvas-container"></div>
 
-                <div class="hud" aria-hidden="true">
-                    <div class="hud-row">
-                        <span id="hud-system-title" class="hud-title">Lorenz 1960 (Tellus 12, 243-254)</span>
-                        <span id="hud-dim-tag" class="hud-dim">N = 3</span>
-                    </div>
-                    <div class="hud-row hud-stats">
-                        <span>t = <strong id="hud-time">0.000</strong></span>
-                        <span>lead <strong id="hud-coords">(0.000, 0.000, 0.000)</strong></span>
-                        <span>speed <strong id="hud-speed" class="stat-amber">0.000</strong></span>
-                    </div>
-                    <div id="hud-invariants-row" class="hud-row hud-invariants">
-                        <span>E <strong id="hud-energy">0.000000</strong> <span id="hud-drift-e" class="stat-green">(ΔE: 0.0e+0)</span></span>
-                        <span>V <strong id="hud-enstrophy">0.000000</strong> <span id="hud-drift-v" class="stat-green">(ΔV: 0.0e+0)</span></span>
-                    </div>
-                </div>
-
                 <div id="probe-readout" class="probe hidden" aria-hidden="true">
                     <div class="probe-title">Orbit #<span id="probe-orbit-id">0</span></div>
                     <div id="probe-coords" class="probe-coords">(0.000, 0.000, 0.000)</div>
@@ -208,7 +192,22 @@
             <div class="card timeline-card">
                 <div class="card-head">
                     <h2>Timeline</h2>
+                    <div class="timeline-id">
+                        <span id="hud-system-title" class="hud-title">Lorenz 1960 (Tellus 12, 243-254)</span>
+                        <span id="hud-dim-tag" class="hud-dim">N = 3</span>
+                    </div>
                     <span id="timeline-readout" class="card-tag">t = 0.000</span>
+                </div>
+                <div class="timeline-stats">
+                    <div class="hud-row hud-stats">
+                        <span>t = <strong id="hud-time">0.000</strong></span>
+                        <span>lead <strong id="hud-coords">(0.000, 0.000, 0.000)</strong></span>
+                        <span>speed <strong id="hud-speed" class="stat-amber">0.000</strong></span>
+                    </div>
+                    <div id="hud-invariants-row" class="hud-row hud-invariants">
+                        <span>E <strong id="hud-energy">0.000000</strong> <span id="hud-drift-e" class="stat-green">(ΔE: 0.0e+0)</span></span>
+                        <span>V <strong id="hud-enstrophy">0.000000</strong> <span id="hud-drift-v" class="stat-green">(ΔV: 0.0e+0)</span></span>
+                    </div>
                 </div>
                 <input type="range" id="timeline-slider" min="0" max="0" step="1" value="0" aria-label="Scrub through the recorded run">
                 <div class="row-between timeline-labels">

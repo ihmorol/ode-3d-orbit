@@ -735,40 +735,16 @@ input[type="range"]:hover::-moz-range-thumb {
 .canvas-container { width: 100%; height: 100%; }
 .canvas-container canvas { display: block; }
 
-.hud {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    pointer-events: none;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    background: rgba(6, 11, 22, 0.82);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-width: calc(100% - 24px);
-    backdrop-filter: blur(4px);
-}
-.hud-row { display: flex; align-items: center; gap: 12px; white-space: nowrap; }
-.hud-title { font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-.hud-dim { color: var(--accent); font-weight: 600; }
-.hud-stats { font-size: 11px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.stat-amber { color: var(--warn); }
+.hud-row { display: flex; align-items: center; gap: 14px; white-space: nowrap; }
+.hud-title { font-family: var(--font-mono); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text); }
+.hud-dim { font-family: var(--font-mono); color: var(--accent); font-weight: 600; font-size: 11px; }
+.hud-stats { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; flex-wrap: wrap; row-gap: 2px; }
 .hud-stats strong { color: var(--text); font-weight: 600; }
-.hud-invariants {
-    border-top: 1px solid var(--border-soft);
-    padding-top: 4px;
-    font-size: 11px;
-    color: var(--text-2);
-    font-variant-numeric: tabular-nums;
-    flex-wrap: wrap;
-    row-gap: 2px;
-}
+.hud-invariants { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-2); font-variant-numeric: tabular-nums; flex-wrap: wrap; row-gap: 2px; }
 .hud-invariants strong { color: var(--text); font-weight: 600; }
 .hud-invariants.hidden { display: none; }
-.stat-amber { color: var(--warn); }
+.stat-green { color: var(--good); }
 .stat-green { color: var(--good); }
 
 .probe {
@@ -799,6 +775,30 @@ input[type="range"]:hover::-moz-range-thumb {
     pointer-events: none;
 }
 .gizmo-wrap canvas { display: block; }
+
+/* ---------- Timeline card (also the info strip) ---------- */
+.timeline-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: auto;
+    min-width: 0;
+}
+.timeline-id .hud-title {
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.timeline-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.timeline-card {
+    gap: 8px;
+    padding-bottom: 10px;
+}
 
 /* ---------- Timeline card ---------- */
 .timeline-card {
