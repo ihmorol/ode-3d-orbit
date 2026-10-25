@@ -1,5 +1,5 @@
 ---
-name: Phase Space
+name: ODE 3D Orbit
 description: A bench instrument for exploring chaotic systems in 3D
 colors:
   midnight-950: "#060a14"
@@ -68,13 +68,13 @@ components:
     padding: "4px 8px"
 ---
 
-# Design System: Phase Space
+# Design System: ODE 3D Orbit
 
 ## Overview
 
 **Creative North Star: "The Bench Instrument"**
 
-Phase Space looks like lab hardware, not a website: a full-viewport frame of flat midnight-blue panels joined by 1px slate seams, one saturated signal-orange voice for anything active or measured, and monospaced numerals wherever data lives. The ground is a cool blue-black — the color of an oscilloscope face — chosen because it makes the orange read hot by contrast and keeps long viewing sessions easy on the eyes. Depth does not exist as shadow; hierarchy comes from surface value, hairline borders, and typographic weight. Corners are square everywhere.
+ODE 3D Orbit looks like lab hardware, not a website: a full-viewport frame of flat midnight-blue panels joined by 1px slate seams, one saturated signal-orange voice for anything active or measured, and monospaced numerals wherever data lives. The ground is a cool blue-black — the color of an oscilloscope face — chosen because it makes the orange read hot by contrast and keeps long viewing sessions easy on the eyes. Depth does not exist as shadow; hierarchy comes from surface value, hairline borders, and typographic weight. Corners are square everywhere.
 
 Density is deliberately high — this is a tool a curious person stares at for an hour — but every value sits at or above the 11px legibility floor, every constant is scrubable in place, and every label says what the thing actually is in plain words.
 

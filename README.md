@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="docs/icon.svg" width="84" alt="Phase Space logo">
+  <img src="docs/icon.svg" width="84" alt="ODE 3D Orbit logo">
 </p>
 
-<h1 align="center">Phase Space</h1>
+<h1 align="center">ODE 3D Orbit</h1>
 
 <p align="center">
-  <a href="https://phase-space-explorer.vercel.app"><img src="https://img.shields.io/badge/live-phase--space--explorer.vercel.app-ff4f00" alt="Live demo"></a>
+  <a href="https://phase-space-explorer.vercel.app"><img src="https://img.shields.io/badge/live-ode--3d--orbit.vercel.app-ff4f00" alt="Live demo"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/three.js-0.186-0b1120?logo=three.js" alt="Three.js 0.186">
   <img src="https://img.shields.io/badge/build%20step-none-31406e" alt="No build step">
@@ -13,9 +13,9 @@
 
 > Pick a system of equations, or write your own, and watch it move in 3D. Drag a constant and the shape follows while it runs.
 
-![Phase Space running the Lorenz 1960 system](docs/screenshot.png)
+![ODE 3D Orbit running the Lorenz 1960 system](docs/screenshot.png)
 
-Phase Space is a small tool for playing with systems of differential equations. Type the equations, press run, and every solution gets drawn as a colored trail in 3D. It all runs in your browser. Nothing to install, and your equations never leave it.
+ODE 3D Orbit is a small tool for playing with systems of differential equations. Type the equations, press run, and every solution gets drawn as a colored trail in 3D. It all runs in your browser. Nothing to install, and your equations never leave it.
 
 ## Who it is for
 
@@ -48,7 +48,7 @@ Phase Space is a small tool for playing with systems of differential equations. 
 
 ## Run it
 
-Open [phase-space-explorer.vercel.app](https://phase-space-explorer.vercel.app). It starts moving right away.
+Open [ode-3d-orbit.vercel.app](https://ode-3d-orbit.vercel.app). It starts moving right away.
 
 To run it locally, serve the folder with any static file server (the browser won't load the modules from a `file://` path):
 

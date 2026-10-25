@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-10-25T19:40:00Z",
-  "title": "Design System: Phase Space",
+  "title": "Design System: ODE 3D Orbit",
   "extensions": {
     "colorMeta": {
       "signal": { "role": "primary", "displayName": "Signal Orange", "canonical": "#ff4f00", "tonalRamp": ["#2b1500", "#552a00", "#804000", "#aa5500", "#d44a00", "#ff4f00", "#ff8a4d", "#ffc499"] },
@@ -70,7 +70,7 @@
   ],
   "narrative": {
     "northStar": "The Bench Instrument",
-    "overview": "Phase Space looks like lab hardware, not a website: a full-viewport frame of flat carbon panels joined by 1px graphite seams, one saturated signal-orange voice for anything active or measured, and monospaced numerals wherever data lives. Depth does not exist as shadow — hierarchy comes from surface value, hairline borders, and typographic weight. Corners are square everywhere. Density is deliberately high, but every value sits at or above the 11px legibility floor and every constant is scrubable in place. The one moment of expressiveness is the simulation itself: colored trail integrations rendering inside a black WebGL viewport that occupies most of the frame.",
+    "overview": "ODE 3D Orbit looks like lab hardware, not a website: a full-viewport frame of flat carbon panels joined by 1px graphite seams, one saturated signal-orange voice for anything active or measured, and monospaced numerals wherever data lives. Depth does not exist as shadow — hierarchy comes from surface value, hairline borders, and typographic weight. Corners are square everywhere. Density is deliberately high, but every value sits at or above the 11px legibility floor and every constant is scrubable in place. The one moment of expressiveness is the simulation itself: colored trail integrations rendering inside a black WebGL viewport that occupies most of the frame.",
     "keyCharacteristics": [
       "Flat carbon panel ladder (4 near-black steps) with 1px seams; zero shadows, zero radius",
       "Signal orange (#ff4f00) as the single accent: active states, live values, focus rings, run state",

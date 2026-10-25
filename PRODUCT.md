@@ -38,7 +38,7 @@ Runs entirely client-side in a modern desktop browser; the 3D viewport expects m
 
 ## Brand Commitments
 
-Name: **Phase Space**. The existing dark "measurement instrument" visual identity (near-black carbon surfaces, signal-orange accent, mono numerals for data) is confirmed as the world to refine within, not replace.
+Name: **ODE 3D Orbit**. The existing dark "measurement instrument" visual identity (near-black carbon surfaces, signal-orange accent, mono numerals for data) is confirmed as the world to refine within, not replace.
 
 ## Evidence on Hand
 
