@@ -1,0 +1,13 @@
+# Local only — superseded incumbent build, kept for reference
+non_linear_phase_space_visualizer.html
+
+# Impeccable working artifacts
+.impeccable/review/
+.impeccable/build/
+.impeccable/mocks/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vercel
+.impeccable/surface-brief-draft.md
