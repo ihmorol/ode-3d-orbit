@@ -11,3 +11,6 @@ non_linear_phase_space_visualizer.html
 Thumbs.db
 .vercel
 .impeccable/surface-brief-draft.md
+
+.vercel
+.env*
